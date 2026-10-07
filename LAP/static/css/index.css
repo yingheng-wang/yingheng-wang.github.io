@@ -21,7 +21,7 @@ body { font-family: 'Noto Sans', sans-serif; color: var(--ink); background: #fff
 .publication-title { line-height: 1.25; font-size: 2.4rem !important; }
 .publication-title .lap-icon { height: 1.05em; vertical-align: -0.14em; margin-right: 0.3em; }
 .publication-authors { margin-top: 0.4rem; }
-.publication-authors a { color: hsl(204, 86%, 45%) !important; }
+.publication-authors a, .publication-authors .author-name { color: hsl(204, 86%, 45%) !important; }
 .publication-authors a:hover { text-decoration: underline; }
 .author-block { display: inline-block; margin: 0 0.15em; }
 .affiliations { color: var(--muted); }
