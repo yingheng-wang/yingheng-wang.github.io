@@ -26,7 +26,6 @@ body { font-family: 'Noto Sans', sans-serif; color: var(--ink); background: #fff
 .author-block { display: inline-block; margin: 0 0.15em; }
 .affiliations { color: var(--muted); }
 .affiliations .author-block { margin: 0 0.7em; }
-.author-note { font-size: 0.95rem; color: var(--muted); margin-top: 0.3rem; }
 .publication-links { margin-top: 1.1rem; }
 .link-block { display: inline-block; }
 .link-block a { margin: 5px 3px; }
