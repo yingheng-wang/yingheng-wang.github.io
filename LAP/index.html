@@ -137,21 +137,20 @@
         <div class="content has-text-justified abstract">
           <p>
             Representation alignment improves and accelerates diffusion training by encouraging intermediate features
-            to match a pretrained visual encoder. Yet choosing the right encoder remains largely empirical: DINOv2
-            provides substantial improvements, whereas MAE, despite retaining more reconstructive information, offers
-            smaller gains. We introduce <em>local appearance purification</em> (LAP), which improves generation quality
-            and makes encoders such as MAE more effective alignment targets by removing locally predictable content and
-            aligning to the residual. LAP modifies only the alignment target, and requires no changes to diffusion
-            training or inference. Through controlled interventions within a fixed encoder, we show that effective
-            alignment depends on what information the target emphasizes, not simply how much image information it
-            contains. Our theory gives a variational interpretation of standard alignment and, for fixed local
-            predictors, a sum of token-wise information bounds conditioned on local appearance. We further derive an
-            exact constant-readout baseline that measures how well the target can be matched without using the
-            diffusion model's hidden state. LAP improves generation quality across five pretrained representations
-            (MAE, AIMv2, CLIP, DINOv2, DINOv3), with the largest gain for MAE: on ImageNet-256 with SiT-B/2, it reduces
-            FID from 53.1 to 42.3. Its gains persist with stronger alignment recipes and tokenizers. Computed before
-            diffusion training, the constant-readout score predicts the benefit of purification (Spearman
-            \(\rho=0.94\) across 13 encoders at 100K steps).
+            to match a pretrained visual encoder. However, standard alignment matches pretrained representations without
+            distinguishing what information may be more useful for generation. We introduce <em>local appearance
+            purification</em> (LAP), which improves generation quality and makes encoders such as MAE more effective
+            alignment targets by removing locally predictable content and aligning to the residual. LAP modifies only the
+            alignment target, and requires no changes to diffusion training or inference. Through controlled
+            interventions within a fixed encoder, we show that effective alignment depends on what information the target
+            emphasizes, not simply how much image information it contains. Our theory gives a variational interpretation
+            of standard alignment and, for fixed local predictors, a sum of token-wise information bounds conditioned on
+            local appearance. To understand why purification benefits some encoders more than others, we derive an exact
+            constant-readout test that measures how well the target can be matched without using the diffusion model's
+            hidden state. LAP improves generation quality across five pretrained representations (MAE, AIMv2, CLIP,
+            DINOv2, DINOv3), with the largest gain for MAE: on ImageNet-256 with SiT-B/2, it reduces FID from 53.1 to
+            42.3. Its gains persist with stronger alignment recipes and tokenizers. Computed before diffusion training,
+            the constant-readout score predicts the benefit of purification (Spearman \(\rho=0.94\) across 13 encoders).
           </p>
         </div>
       </div>
