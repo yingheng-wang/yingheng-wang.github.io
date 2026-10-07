@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Purify Before You Align (LAP)</title>
+  <meta name="description" content="LAP (Local Appearance Purification) removes locally predictable content from a pretrained encoder's features and aligns the diffusion model to the residual, improving representation alignment across teachers with no inference cost.">
+  <meta name="keywords" content="LAP, local appearance purification, representation alignment, REPA, diffusion models, SiT, MAE, DINOv2">
+
+  <!-- Social cards -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Purify Before You Align: Improving Representation Alignment for Diffusion Models">
+  <meta property="og:description" content="Remove what local appearance already predicts, align to the residual: LAP turns MAE into an effective alignment teacher (FID 53.1 → 42.3) with no inference cost.">
+  <meta property="og:url" content="https://isjakewong.github.io/LAP/">
+  <meta property="og:image" content="https://isjakewong.github.io/LAP/static/images/og_image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Purify Before You Align (LAP)">
+  <meta name="twitter:description" content="Remove what local appearance already predicts, align to the residual: LAP improves representation alignment for diffusion models with no inference cost.">
+  <meta name="twitter:image" content="https://isjakewong.github.io/LAP/static/images/og_image.png">
+
+  <!-- Google Scholar -->
+  <meta name="citation_title" content="Purify Before You Align: Improving Representation Alignment for Diffusion Models">
+  <meta name="citation_author" content="Wang, Yingheng">
+  <meta name="citation_author" content="Li, Yaoqiang">
+  <meta name="citation_author" content="Wu, Yaqin">
+  <meta name="citation_author" content="Bai, Junwen">
+  <meta name="citation_author" content="Gu, Jiatao">
+  <meta name="citation_author" content="De Sa, Christopher">
+  <meta name="citation_author" content="Kuleshov, Volodymyr">
+  <meta name="citation_publication_date" content="2026">
+
+  <link rel="icon" type="image/svg+xml" href="static/images/lap_icon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="static/images/favicon-32.png">
+  <link rel="apple-touch-icon" href="static/images/apple-touch-icon.png">
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      chtml: { scale: 1.0 }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script defer src="static/js/index.js"></script>
+</head>
+<body>
+
+<!-- ================= Title ================= -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-widescreen">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-2 publication-title">
+            <img class="lap-icon" src="static/images/lap_icon.svg" alt="">Purify Before You Align:<br>
+            Improving Representation Alignment for Diffusion Models
+          </h1>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><a href="https://isjakewong.github.io/" target="_blank">Yingheng Wang</a><sup>1,*</sup>,</span>
+            <span class="author-block">Yaoqiang Li<sup>&dagger;</sup>,</span>
+            <span class="author-block">Yaqin Wu<sup>&dagger;</sup>,</span>
+            <span class="author-block"><a href="https://junwenbai.github.io/" target="_blank">Junwen Bai</a><sup>1</sup>,</span>
+            <br>
+            <span class="author-block"><a href="https://jiataogu.me/" target="_blank">Jiatao Gu</a><sup>2</sup>,</span>
+            <span class="author-block"><a href="https://www.cs.cornell.edu/~cdesa/" target="_blank">Christopher De Sa</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://www.cs.cornell.edu/~kuleshov/" target="_blank">Volodymyr Kuleshov</a><sup>1</sup></span>
+          </div>
+
+          <div class="is-size-5 publication-authors affiliations">
+            <span class="author-block"><sup>1</sup>Cornell University</span>
+            <span class="author-block"><sup>2</sup>University of Pennsylvania</span>
+            <span class="author-block"><sup>&dagger;</sup>Independent Researcher</span>
+          </div>
+          <div class="author-note"><sup>*</sup>Corresponding author: <a href="mailto:yingheng@cs.cornell.edu">yingheng@cs.cornell.edu</a></div>
+
+          <div class="publication-links">
+            <span class="link-block">
+              <a id="arxiv-link" href="#" aria-disabled="true" title="The arXiv version is coming soon"
+                 class="external-link button is-normal is-rounded is-dark is-static-soon">
+                <span class="icon"><i class="ai ai-arxiv"></i></span>
+                <span class="arxiv-text">arXiv (coming soon)</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="https://github.com/isjakewong/LAP" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fab fa-github"></i></span>
+                <span>Code</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="https://huggingface.co/yingheng/LAP-checkpoints" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="hf-logo">🤗</i></span>
+                <span>Checkpoints</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="#BibTeX" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fas fa-quote-right"></i></span>
+                <span>BibTeX</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Teaser ================= -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img src="static/images/fig1_what_matters.png" width="1815" height="660"
+           alt="(a) A pretrained encoder's features split into local appearance, which can hurt generation, and a residual, which retains the gain; LAP aligns the diffusion model to the residual. (b) On the 200-class ImageNet subset, MAE alignment improves from FID-DINOv2 1642.3 (raw) to 1508.3 (LAP-L) and 1484.4 (LAP-N), below DINOv2 REPA at 1534.9.">
+      <h2 class="subtitle has-text-centered">
+        <b>Purify the target, then align.</b> LAP subtracts the part of a pretrained encoder's features that
+        local clean-image appearance already predicts, and aligns the diffusion model to the residual.
+        Only the alignment target changes: training loss, architecture and sampler stay the same.
+      </h2>
+      <div class="columns is-mobile is-multiline stat-strip">
+        <div class="column is-half-mobile is-one-quarter-tablet">
+          <div class="stat"><div class="stat-value">53.1 → 42.3</div><div class="stat-label">FID-50K of MAE-aligned SiT-B/2</div></div>
+        </div>
+        <div class="column is-half-mobile is-one-quarter-tablet">
+          <div class="stat"><div class="stat-value">5 teachers</div><div class="stat-label">MAE, AIMv2, CLIP improve; DINOv2/v3 preserved</div></div>
+        </div>
+        <div class="column is-half-mobile is-one-quarter-tablet">
+          <div class="stat"><div class="stat-value">ρ = 0.94</div><div class="stat-label">C<sub>0</sub> predicts the gain across 13 encoders</div></div>
+        </div>
+        <div class="column is-half-mobile is-one-quarter-tablet">
+          <div class="stat"><div class="stat-value">0</div><div class="stat-label">extra inference cost</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Abstract ================= -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified abstract">
+          <p>
+            Representation alignment improves and accelerates diffusion training by encouraging intermediate features
+            to match a pretrained visual encoder. Yet choosing the right encoder remains largely empirical: DINOv2
+            provides substantial improvements, whereas MAE, despite retaining more reconstructive information, offers
+            smaller gains. We introduce <em>local appearance purification</em> (LAP), which improves generation quality
+            and makes encoders such as MAE more effective alignment targets by removing locally predictable content and
+            aligning to the residual. LAP modifies only the alignment target, and requires no changes to diffusion
+            training or inference. Through controlled interventions within a fixed encoder, we show that effective
+            alignment depends on what information the target emphasizes, not simply how much image information it
+            contains. Our theory gives a variational interpretation of standard alignment and, for fixed local
+            predictors, a sum of token-wise information bounds conditioned on local appearance. We further derive an
+            exact constant-readout baseline that measures how well the target can be matched without using the
+            diffusion model's hidden state. LAP improves generation quality across five pretrained representations
+            (MAE, AIMv2, CLIP, DINOv2, DINOv3), with the largest gain for MAE: on ImageNet-256 with SiT-B/2, it reduces
+            FID from 53.1 to 42.3. Its gains persist with stronger alignment recipes and tokenizers. Computed before
+            diffusion training, the constant-readout score predicts the benefit of purification (Spearman
+            \(\rho=0.94\) across 13 encoders at 100K steps).
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Motivation ================= -->
+<section class="section" id="motivation">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">What Should an Alignment Target Ask For?</h2>
+
+    <div class="columns is-vcentered">
+      <div class="column is-7">
+        <p>
+          <a href="https://github.com/sihyun-yu/REPA" target="_blank">REPA</a> trains a diffusion transformer to match,
+          through a small projector, the features of a frozen pretrained encoder. Which encoder to use is still mostly an
+          empirical choice, and MAE is the sharpest puzzle: diffusion models learn to reconstruct clean images, and MAE
+          features predict clean-image content far better than DINOv2. Yet across five encoders, <b>better clean-image
+          prediction generally accompanies worse generation</b>, and MAE gives the smallest gain.
+        </p>
+      </div>
+      <div class="column is-5">
+        <figure class="paper-figure" style="margin:0">
+          <img src="static/images/fig_encoder_utility.svg" alt="Scatter of FID-DINOv2 against image-prediction R squared for CLIP, I-JEPA, DINOv2, MoCo v3 and MAE: higher image prediction goes with worse FID, and MAE is near the no-alignment line.">
+          <figcaption>Clean-latent prediction from the target vs. generation (200-class ImageNet subset, 50K steps, FID-DINOv2 on 10K samples).</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <p class="question">What information should an alignment target ask the denoiser to match?</p>
+
+    <h3 class="title">One encoder, opposite effects</h3>
+    <p>
+      A comparison across encoders cannot isolate the cause, since architecture, data and objective all change together.
+      We therefore hold DINOv2 fixed and split each target token into the part an affine map can predict from the
+      co-located clean-latent patch, and the residual. The predictable part is tiny (rank at most 17, about 2% of the
+      centered feature variance) and easier to match, yet aligning to it alone makes FID-50K <b>worse than no alignment</b>
+      (56.71 vs. 53.92). Aligning to the residual keeps the full benefit of raw DINOv2 (41.47 vs. 41.75).
+    </p>
+    <figure class="paper-figure">
+      <img src="static/images/fig2_motivating.png" width="1815" height="725" loading="lazy"
+           alt="Patch-similarity maps for the original, predictable and residual DINOv2 features on two images, and FID-50K: original 41.75, predictable component 56.71, residual 41.47, no alignment 53.92.">
+      <figcaption>
+        <b>One encoder, opposite alignment effects.</b> (a) DINOv2 features split into a locally predictable component
+        and a residual; each map shows the cosine similarity of every patch to the red-boxed patch. (b) Aligning to the
+        locally predictable component hurts generation, whereas the residual (LAP-L) keeps the benefit
+        (SiT-B/2, ImageNet 256×256, 400K steps, FID-50K).
+      </figcaption>
+    </figure>
+
+    <h3 class="title">Better velocity prediction, worse generation</h3>
+    <p>
+      A second intervention pushes the aligned representation to predict the denoising target directly, with an
+      auxiliary head. At full scale this raises the held-out velocity-prediction \(R^2\) from 0.11 to 0.53, but worsens
+      FID-50K from 41.75 to 46.79. In the unmodified REPA model, DINOv2 features are readable from the hidden state, but
+      the denoiser relies on the aligned subspace less than on rank-matched random subspaces: readable is not the same as
+      relied on.
+    </p>
+    <figure class="paper-figure">
+      <img src="static/images/fig_causal_tests.svg" loading="lazy"
+           alt="(a) Ablating the aligned subspace raises velocity error by 12.2% of the full-layer effect, versus 14.0% for the untrained projector subspace and 22.7% for random subspaces. (b, c) Increasing the auxiliary velocity loss raises velocity sufficiency but worsens FID.">
+      <figcaption>
+        <b>Readability, reliance, and the auxiliary prediction loss.</b> (a) Subspace ablations of the REPA model, as a
+        percentage of the full-layer effect. (b) Sweeping the auxiliary loss weight \(\lambda_s\) on the 200-class subset:
+        velocity sufficiency saturates while FID keeps worsening. (c) The same loss at full scale (FID-50K).
+      </figcaption>
+    </figure>
+
+    <div class="takeaway">
+      <p>
+        <b>Takeaway.</b> The denoising loss already supplies a strong reconstruction signal. Alignment helps most when
+        the target emphasizes information <em>beyond</em> what local appearance predicts, not when it adds more
+        reconstruction content.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Method ================= -->
+<section class="section hero is-light" id="method">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">Local Appearance Purification</h2>
+    <p>
+      In REPA, a projector \(g_\psi\) maps the hidden state \(h_t^l\) at block \(l\) to \(a_t = g_\psi(h_t^l)\), which
+      is matched token-wise to a target \(y\) computed from the clean image:
+    </p>
+    \[
+      \begin{gathered}
+      \mathcal{L} = \mathcal{L}_{\mathrm{flow}} + \lambda_a \mathcal{L}_{\mathrm{align}},
+      \\
+      \mathcal{L}_{\mathrm{align}} = -\mathbb{E}\Big[\tfrac{1}{N}\textstyle\sum_{i=1}^{N} \cos\big(a_t^{(i)}, y^{(i)}\big)\Big].
+      \end{gathered}
+    \]
+    <p>
+      Standard REPA uses the raw encoder output \(y = z = f(I)\). LAP fits a local predictor \(d_\phi\) from the
+      patchified clean latent \(X_p\) to \(z\), and aligns to what it cannot predict:
+    </p>
+    \[
+      \begin{gathered}
+      \mathcal{L}_{\mathrm{pred}} = \mathbb{E}\,\big\| z - d_\phi(X_p) \big\|^2,
+      \\
+      y^{\mathrm{pure}} = \mathrm{sg}\big[\, z - d_\phi(X_p) \,\big].
+      \end{gathered}
+    \]
+
+    <figure class="paper-figure">
+      <img src="static/images/fig_framework.png" width="2000" height="1125" loading="lazy"
+           alt="Diagram comparing vanilla SiT training, SiT with REPA aligned to the raw encoder target, and LAP-N, where a frozen local predictor's prediction from the patchified clean latent is subtracted from the encoder target before alignment.">
+      <figcaption>
+        <b>The LAP-N framework.</b> Compared with SiT training with REPA, LAP-N changes only the alignment target, by
+        subtracting the content a frozen local predictor \(d_\phi\) recovers from the clean latent. Training and inference
+        are otherwise unchanged.
+      </figcaption>
+    </figure>
+
+    <div class="columns">
+      <div class="column">
+        <p><span class="lap">LAP-L</span> (linear). An affine map from each clean-latent patch to its target token, refit on
+          every minibatch with no gradient through the fit. Nothing to pretrain.</p>
+      </div>
+      <div class="column">
+        <p><span class="lap">LAP-N</span> (nonlinear). A small convolutional predictor over a local \(k\times k\)
+          neighborhood of latent patches, trained once per teacher before diffusion training and then frozen.</p>
+      </div>
+    </div>
+    <p>
+      The predictor only defines the target: it receives no gradient from diffusion training and is discarded at
+      sampling time. The residual is not guaranteed to be purely semantic (local patches can carry semantics, and a
+      limited predictor will not remove everything local), so we measure its content and its effect on generation directly.
+    </p>
+    <p class="code-label">Pseudocode of the target change (see <code>train.py</code> for the full version)</p>
+<pre><code class="language-python"># z:  teacher tokens f(I)                  (B, N, D)
+# Xp: patchified clean latent, one patch per token  (B, N, C*p*p)
+
+# LAP-L: per-batch affine residual
+A = torch.cat([Xp, torch.ones_like(Xp[..., :1])], dim=-1).flatten(0, 1)
+W = torch.linalg.lstsq(A, z.flatten(0, 1)).solution
+y = z - (A @ W).view_as(z)
+
+# LAP-N: subtract a frozen local purifier (trained once per teacher)
+y = z - purifier(Xp)
+
+loss_align = -F.cosine_similarity(projector(h), y.detach(), dim=-1).mean()</code></pre>
+
+    <h3 class="title">A variational view</h3>
+    <p>
+      Reading cosine alignment as the log-likelihood of a von Mises&ndash;Fisher decoder for each target direction,
+      standard alignment maximizes a variational lower bound on the information the hidden state carries about the
+      teacher. For a fixed local predictor with input neighborhood \(S_i\), LAP instead bounds a sum of token-wise
+      information terms conditioned on local appearance:
+    </p>
+    \[
+      \begin{aligned}
+      \mathcal{I}(h; z) &\;\ge\; c_\sigma - \kappa N\, \mathcal{L}^{(t)}_{\mathrm{align}}(z),
+      \\
+      \textstyle\sum_{i=1}^{N} \mathcal{I}\big(h; z^{(i)} \mid S_i\big) &\;\ge\; c'_\sigma - \kappa N\, \mathcal{L}^{(t)}_{\mathrm{align}}\big(y^{\mathrm{pure}}\big).
+      \end{aligned}
+    \]
+    <p>
+      These bounds clarify what each loss rewards; they may be loose and do not by themselves explain the generation
+      gains. Derivations and assumptions are in the paper's appendix.
+    </p>
+  </div>
+</section>
+
+<!-- ================= Constant readout ================= -->
+<section class="section" id="c0">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">The Constant-Readout Score \(C_0\)</h2>
+    <p>
+      A high alignment score does not mean the hidden state is informative. If target tokens share a common direction,
+      a readout that ignores the hidden state and always outputs the same unit vector \(\mu\) already scores well. The
+      best such constant readout has a closed form:
+    </p>
+    \[
+      \begin{gathered}
+      C_0(y) \;=\; \max_{\|\mu\|=1} \mu^\top m_y \;=\; \|m_y\|,
+      \\
+      m_y = \mathbb{E}\Big[\tfrac{1}{N}\textstyle\sum_{i=1}^{N} \hat y^{(i)}\Big],
+      \end{gathered}
+    \]
+    <p>
+      where \(\hat y^{(i)}\) is the normalized target token. \(C_0\) depends only on the target, so it can be computed
+      before any diffusion training: normalize the tokens, average over images and positions, take the norm. Raw MAE has
+      \(C_0 = 0.93\), close to the trained projector's cosine of 0.957, so most of its alignment score is reachable
+      without using the hidden state. Both LAP variants bring \(C_0\) down to about 0.01&ndash;0.02.
+    </p>
+    <figure class="paper-figure">
+      <img src="static/images/fig_lap_targets_irepa.png" width="1815" height="725" loading="lazy"
+           alt="Cosine similarity to a query patch for raw MAE features (nearly uniform), LAP-L, LAP-N and iREPA spatial normalization (localized structure). Mean pairwise cosine over 256 images: raw MAE 0.876, LAP-L 0.084, LAP-N 0.072, iREPA SN -0.002.">
+      <figcaption>
+        <b>How purification changes the MAE target.</b> (a) Cosine similarity to the red-boxed query patch for raw
+        features, LAP-L, LAP-N, and the iREPA-style spatially normalized target (SN), on a shared scale. (b) Mean
+        off-diagonal patch cosine over 256 held-out images: both LAP variants remove MAE's high common similarity.
+      </figcaption>
+    </figure>
+
+    <div class="columns is-vcentered">
+      <div class="column is-7">
+        <p>
+          <b>\(C_0\) predicts which teachers benefit.</b> Across 13 encoders under matched protocols, higher raw-target
+          \(C_0\) goes with larger FID gains from LAP-L: Spearman \(\rho = 0.94\) at 100K steps (FID-10K) and 0.79 at
+          400K steps (FID-50K). Controlling for raw-target FID, the partial rank correlations remain 0.83 and 0.69.
+        </p>
+        <p>
+          <b>\(C_0\) is not the whole story.</b> For MAE, LAP-L and LAP-N reach the same near-zero \(C_0\), yet LAP-N
+          generates better. LAP-N removes 35% of held-out target variance while preserving class information
+          (68.7% linear-probe accuracy vs. 66.1% for raw MAE).
+        </p>
+      </div>
+      <div class="column is-5">
+        <figure class="paper-figure" style="margin:0">
+          <img src="static/images/fig_sweep_scatter.svg" loading="lazy"
+               alt="Scatter of alignment gain in FID against raw-target C0 for 13 encoders, rising with C0; MAE-B and MAE-L have the largest C0 and the largest gains.">
+          <figcaption>Raw-to-LAP-L FID-10K improvement at 100K steps vs. raw-target \(C_0\). Dashed: quadratic fit.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Results ================= -->
+<section class="section hero is-light" id="results">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">Results</h2>
+    <p>
+      Class-conditional SiT-B/2 on ImageNet 256×256, 400K steps, batch 64, SD-VAE, alignment at block 8, no guidance,
+      ADM evaluation protocol. Every number is a mean over two training seeds.
+    </p>
+
+    <h3 class="title">Purification across five teachers</h3>
+    <div class="table-wrap">
+      <table class="results">
+        <thead>
+          <tr><th class="l">Teacher</th><th class="c">\(C_0\)</th><th class="l">Method</th><th>FID ↓</th><th>IS ↑</th><th>Prec. ↑</th><th>Rec. ↑</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="l" colspan="3">No alignment</td><td>53.92</td><td>25.34</td><td>0.435</td><td>0.602</td></tr>
+
+          <tr class="group-start"><td class="l plain" rowspan="3">MAE ViT-L</td><td class="c plain" rowspan="3">0.93</td><td class="l">REPA</td><td>53.05</td><td>26.30</td><td>0.438</td><td>0.599</td></tr>
+          <tr class="ours"><td class="l">+ LAP-L</td><td>45.15</td><td>31.44</td><td>0.480</td><td>0.617</td></tr>
+          <tr class="ours"><td class="l">+ LAP-N</td><td><b>42.30</b></td><td><b>33.85</b></td><td><b>0.496</b></td><td><b>0.622</b></td></tr>
+
+          <tr class="group-start"><td class="l plain" rowspan="3">AIMv2 ViT-L</td><td class="c plain" rowspan="3">0.66</td><td class="l">REPA</td><td>47.97</td><td>29.88</td><td>0.464</td><td>0.615</td></tr>
+          <tr class="ours"><td class="l">+ LAP-L</td><td><b>44.31</b></td><td><b>32.67</b></td><td><b>0.484</b></td><td><b>0.622</b></td></tr>
+          <tr class="ours"><td class="l">+ LAP-N</td><td>44.56</td><td>32.40</td><td>0.483</td><td>0.621</td></tr>
+
+          <tr class="group-start"><td class="l plain" rowspan="3">CLIP ViT-L</td><td class="c plain" rowspan="3">0.61</td><td class="l">REPA</td><td>44.74</td><td>32.21</td><td>0.481</td><td>0.615</td></tr>
+          <tr class="ours"><td class="l">+ LAP-L</td><td>42.69</td><td>33.91</td><td>0.493</td><td>0.621</td></tr>
+          <tr class="ours"><td class="l">+ LAP-N</td><td><b>42.21</b></td><td><b>34.38</b></td><td><b>0.495</b></td><td><b>0.624</b></td></tr>
+
+          <tr class="group-start"><td class="l plain" rowspan="3">DINOv3 ViT-B</td><td class="c plain" rowspan="3">0.52</td><td class="l">REPA</td><td>42.73</td><td>34.25</td><td>0.486</td><td>0.623</td></tr>
+          <tr class="ours"><td class="l">+ LAP-L</td><td><b>42.07</b></td><td><b>34.91</b></td><td><b>0.490</b></td><td><b>0.633</b></td></tr>
+          <tr class="ours"><td class="l">+ LAP-N</td><td>43.27</td><td>34.02</td><td>0.485</td><td>0.628</td></tr>
+
+          <tr class="group-start"><td class="l plain" rowspan="3">DINOv2 ViT-B</td><td class="c plain" rowspan="3">0.22</td><td class="l">REPA</td><td>41.75</td><td>35.50</td><td>0.492</td><td>0.630</td></tr>
+          <tr class="ours"><td class="l">+ LAP-L</td><td><b>41.47</b></td><td><b>35.53</b></td><td><b>0.495</b></td><td>0.621</td></tr>
+          <tr class="ours"><td class="l">+ LAP-N</td><td>42.11</td><td>35.26</td><td>0.493</td><td><b>0.632</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption">
+      Teachers are ordered by raw-target \(C_0\). Shaded rows use LAP; bold marks the best mean per teacher and metric.
+      The gain is largest where \(C_0\) is high: LAP-L improves mean FID by 7.9, 3.7 and 2.0 for MAE, AIMv2 and CLIP, and
+      by 0.7 and 0.3 for DINOv3 and DINOv2, which is within seed variation.
+    </p>
+
+    <h3 class="title">Faster from the start</h3>
+    <figure class="paper-figure">
+      <img src="static/images/fig_curves.svg" loading="lazy"
+           alt="FID-10K against training steps from 100K to 400K for MAE, AIMv2, CLIP and DINOv3: the LAP curve is below REPA at every checkpoint, by the widest margin for MAE.">
+      <figcaption>
+        <b>Purification improves throughout training.</b> Two-seed FID-10K means and ranges, using LAP-N for MAE and CLIP
+        and LAP-L for AIMv2 and DINOv3. By 100K steps LAP lowers FID-10K by 14.4 (MAE), 4.3 (AIMv2) and 4.5 (CLIP).
+      </figcaption>
+    </figure>
+
+    <h3 class="title">Complements stronger alignment recipes</h3>
+    <p>
+      LAP changes only the target, so it stacks with methods that change other parts of alignment:
+      spatial operations (<a href="https://arxiv.org/abs/2512.10794" target="_blank">iREPA</a>), the alignment schedule
+      (VA-REPA), an entangled class token (REG), and a structural loss (sREPA).
+    </p>
+    <div class="table-wrap">
+      <table class="results">
+        <thead>
+          <tr><th class="l">Recipe</th><th>MAE</th><th>MAE + LAP</th><th>DINOv2</th><th>DINOv2 + LAP</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="l">iREPA</td><td>43.06</td><td class="ours-cell"><b>41.32</b></td><td>41.32</td><td class="ours-cell"><b>40.55</b></td></tr>
+          <tr><td class="l">VA-REPA</td><td>52.82</td><td class="ours-cell"><b>41.60</b></td><td>40.71</td><td class="ours-cell"><b>40.39</b></td></tr>
+          <tr><td class="l">REG</td><td>52.92</td><td class="ours-cell"><b>41.65</b></td><td>29.24</td><td class="ours-cell"><b>28.67</b></td></tr>
+          <tr><td class="l">sREPA</td><td>50.43</td><td class="ours-cell"><b>38.46</b></td><td>38.13</td><td class="ours-cell"><b>36.92</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption">
+      FID-50K. Each + LAP column uses the variant with the best two-seed mean (LAP-N for MAE; LAP-L or LAP-N for DINOv2,
+      see the paper). Spatial operations improve MAE a lot on their own, but do not subsume purification.
+    </p>
+
+    <h3 class="title">Makes MAE effective across tokenizers</h3>
+    <div class="table-wrap">
+      <table class="results">
+        <thead>
+          <tr><th class="l">Tokenizer</th><th>No alignment</th><th>REPA (raw MAE)</th><th>+ LAP-N</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="l">SD-VAE</td><td>53.92</td><td>53.05</td><td class="ours-cell"><b>42.30</b></td></tr>
+          <tr><td class="l">EQ-VAE</td><td>52.50</td><td>52.41</td><td class="ours-cell"><b>40.01</b></td></tr>
+          <tr><td class="l">REPA-E VAE</td><td>32.30</td><td>33.74</td><td class="ours-cell"><b>27.56</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption">
+      FID-50K, MAE ViT-L teacher, released tokenizers kept frozen. With the REPA-E VAE, raw MAE is worse than no alignment,
+      while LAP turns it into a clear gain.
+    </p>
+
+    <h3 class="title">Larger batches and models</h3>
+    <div class="table-wrap">
+      <table class="results">
+        <thead>
+          <tr><th class="l">Model</th><th>Batch</th><th>Unaligned</th><th>Raw MAE</th><th>LAP-N (MAE)</th><th>REPA (DINOv2)</th><th>LAP-L (DINOv2)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="l">SiT-B/2</td><td>256</td><td>36.54</td><td>34.72</td><td class="ours-cell">28.57</td><td>27.67</td><td class="ours-cell"><b>27.58</b></td></tr>
+          <tr><td class="l">SiT-L/2</td><td>256</td><td>20.14</td><td>16.05</td><td class="ours-cell">11.97</td><td>10.01</td><td class="ours-cell"><b>9.78</b></td></tr>
+          <tr><td class="l">SiT-XL/2</td><td>256</td><td>17.86</td><td>13.65</td><td class="ours-cell">9.67</td><td>8.10</td><td class="ours-cell"><b>7.76</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption">
+      FID-50K without guidance, 400K steps. LAP-N keeps improving MAE at scale, though a gap to DINOv2 REPA remains;
+      LAP-L on DINOv2 gives the lowest FID in every row. With classifier-free guidance, see the paper's appendix.
+    </p>
+
+    <p>
+      <b>Beyond ImageNet.</b> On the aerial-scene datasets RESISC45 and AID, LAP with MAE gives the best FID, improving
+      over DINOv2-based REPA by 4.9 and 3.6 FID. On AID neither raw MAE nor raw DINOv2 beats no alignment, while
+      purified MAE does.
+    </p>
+  </div>
+</section>
+
+<!-- ================= Samples ================= -->
+<section class="section" id="samples">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">Samples</h2>
+    <p>
+      Uncurated samples from the 400K-step EMA checkpoints. In each column, every row shares the class label and the
+      sampling noise, so differences come from the alignment target alone. The eight classes were fixed in advance.
+    </p>
+    <div class="explorer-controls">
+      <div class="tabs is-toggle is-small is-centered"><ul id="sample-tabs" role="tablist"></ul></div>
+      <div class="buttons" id="sample-options"></div>
+      <p class="explorer-note" id="sample-note"></p>
+    </div>
+    <div class="sample-grid" id="sample-grid"></div>
+  </div>
+</section>
+
+<div class="modal compare-modal" id="compare-modal">
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <div class="compare-box">
+      <h4 id="compare-title"></h4>
+      <div class="compare-row" id="compare-row"></div>
+      <div class="compare-nav">
+        <button class="button is-small is-rounded" id="compare-prev" type="button"><span class="icon"><i class="fas fa-arrow-left"></i></span><span>Previous class</span></button>
+        <button class="button is-small is-rounded" id="compare-next" type="button"><span>Next class</span><span class="icon"><i class="fas fa-arrow-right"></i></span></button>
+      </div>
+    </div>
+  </div>
+  <button class="modal-close is-large" aria-label="close"></button>
+</div>
+
+<!-- ================= Code ================= -->
+<section class="section hero is-light" id="code">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">Code and Checkpoints</h2>
+    <p>
+      The <a href="https://github.com/isjakewong/LAP" target="_blank">repository</a> covers LAP-L, LAP-N and purifier
+      training, the REPA baselines and compositions, the \(C_0\) score and hidden-state probes, and one-command recipes
+      for every experiment in the paper. Five SiT-B/2 checkpoints and all 12 purifiers are on
+      <a href="https://huggingface.co/yingheng/LAP-checkpoints" target="_blank">Hugging Face</a>.
+    </p>
+<pre><code class="language-bash">git clone https://github.com/isjakewong/LAP && cd LAP
+pip install -r requirements.txt          # plus OpenAI CLIP, see the README
+
+python scripts/download_checkpoints.py --output checkpoints
+python sample.py --ckpt checkpoints/diffusion/in1k_mae_lapk5_s1.pt --out samples/mae_lapn
+
+python reproduce.py train in1k_mae_lapk5  # MAE + LAP-N, as in the paper</code></pre>
+  </div>
+</section>
+
+<!-- ================= BibTeX ================= -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">BibTeX</h2>
+    <div class="bib-wrap">
+    <button class="button is-small copy-btn" id="copy-bibtex" type="button">Copy</button>
+    <pre><code id="bibtex-code">@article{wang2026purify,
+  title   = {Purify Before You Align: Improving Representation Alignment for Diffusion Models},
+  author  = {Wang, Yingheng and Li, Yaoqiang and Wu, Yaqin and Bai, Junwen and Gu, Jiatao and De Sa, Christopher and Kuleshov, Volodymyr},
+  journal = {arXiv preprint},
+  year    = {2026}
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content has-text-centered">
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>,
+            which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+            This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
