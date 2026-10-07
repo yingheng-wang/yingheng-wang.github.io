@@ -126,20 +126,6 @@
         local clean-image appearance already predicts, and aligns the diffusion model to the residual.
         Only the alignment target changes: training loss, architecture and sampler stay the same.
       </h2>
-      <div class="columns is-mobile is-multiline stat-strip">
-        <div class="column is-half-mobile is-one-quarter-tablet">
-          <div class="stat"><div class="stat-value">53.1 → 42.3</div><div class="stat-label">FID-50K of MAE-aligned SiT-B/2</div></div>
-        </div>
-        <div class="column is-half-mobile is-one-quarter-tablet">
-          <div class="stat"><div class="stat-value">5 teachers</div><div class="stat-label">MAE, AIMv2, CLIP improve; DINOv2/v3 preserved</div></div>
-        </div>
-        <div class="column is-half-mobile is-one-quarter-tablet">
-          <div class="stat"><div class="stat-value">ρ = 0.94</div><div class="stat-label">C<sub>0</sub> predicts the gain across 13 encoders</div></div>
-        </div>
-        <div class="column is-half-mobile is-one-quarter-tablet">
-          <div class="stat"><div class="stat-value">0</div><div class="stat-label">extra inference cost</div></div>
-        </div>
-      </div>
     </div>
   </div>
 </section>

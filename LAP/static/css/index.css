@@ -38,13 +38,6 @@ body { font-family: 'Noto Sans', sans-serif; color: var(--ink); background: #fff
 .teaser img { display: block; width: 100%; margin: 0 auto; }
 .teaser .subtitle { font-size: 1.1rem; line-height: 1.55; margin-top: 1rem; color: #4a4a4a; }
 
-.stat-strip { margin-top: 1.6rem; }
-.stat {
-  border: 1px solid var(--rule); border-radius: 10px; padding: 0.9rem 0.8rem; height: 100%;
-  text-align: center; background: #fff;
-}
-.stat-value { font-family: 'Google Sans', 'Noto Sans', sans-serif; font-size: 1.7rem; font-weight: 600; color: var(--lap-purple); line-height: 1.2; }
-.stat-label { font-size: 0.95rem; color: #555; margin-top: 0.25rem; line-height: 1.4; }
 
 /* ---------- body sections ---------- */
 .section { padding: 2.75rem 1.5rem; }
@@ -142,7 +135,6 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; padding: 0
   .publication-authors { font-size: 1.05rem !important; }
   .section { padding: 2rem 1rem; }
   .content p, .content li, .abstract p { font-size: 1rem; }
-  .stat-value { font-size: 1.45rem; }
   .sample-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .sample-grid .col-head { display: none; }
   .sample-label { grid-column: 1 / -1; text-align: left; padding: 0.4rem 0 0; }
