@@ -89,7 +89,7 @@
               </a>
             </span>
             <span class="link-block">
-              <a href="https://github.com/isjakewong/LAP" target="_blank" class="external-link button is-normal is-rounded is-dark">
+              <a href="https://github.com/yingheng-wang/LAP" target="_blank" class="external-link button is-normal is-rounded is-dark">
                 <span class="icon"><i class="fab fa-github"></i></span>
                 <span>Code</span>
               </a>
@@ -534,12 +534,12 @@ loss_align = -F.cosine_similarity(projector(h), y.detach(), dim=-1).mean()</code
   <div class="container is-max-desktop content">
     <h2 class="title is-3">Code and Checkpoints</h2>
     <p>
-      The <a href="https://github.com/isjakewong/LAP" target="_blank">repository</a> covers LAP-L, LAP-N and purifier
+      The <a href="https://github.com/yingheng-wang/LAP" target="_blank">repository</a> covers LAP-L, LAP-N and purifier
       training, the REPA baselines and compositions, the \(C_0\) score and hidden-state probes, and one-command recipes
       for every experiment in the paper. Five SiT-B/2 checkpoints and all 12 purifiers are on
       <a href="https://huggingface.co/yingheng/LAP-checkpoints" target="_blank">Hugging Face</a>.
     </p>
-<pre><code class="language-bash">git clone https://github.com/isjakewong/LAP && cd LAP
+<pre><code class="language-bash">git clone https://github.com/yingheng-wang/LAP && cd LAP
 pip install -r requirements.txt          # plus OpenAI CLIP, see the README
 
 python scripts/download_checkpoints.py --output checkpoints
