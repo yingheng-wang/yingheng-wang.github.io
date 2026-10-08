@@ -49,7 +49,8 @@
     };
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <script defer src="static/js/index.js?v=20261007b"></script>
+  <script defer src="static/js/samples.js?v=20261008"></script>
+  <script defer src="static/js/index.js?v=20261008"></script>
 </head>
 <body>
 
@@ -521,8 +522,8 @@ loss_align = -F.cosine_similarity(projector(h), y.detach(), dim=-1).mean()</code
   <div class="container is-max-desktop content">
     <h2 class="title is-3">Samples</h2>
     <p>
-      Uncurated samples from the 400K-step EMA checkpoints. In each column, every row shares the class label and the
-      sampling noise, so differences come from the alignment target alone. The eight classes were fixed in advance.
+      Samples from the 400K-step EMA checkpoints. In each column, every row shares the class label and the
+      sampling noise, so differences come from the alignment target alone.
     </p>
     <div class="explorer-controls">
       <div class="tabs is-toggle is-small is-centered"><ul id="sample-tabs" role="tablist"></ul></div>

@@ -4,7 +4,8 @@
 const ARXIV_ID = '';
 // ---------------------------------------------------------------------------
 
-const CLASSES = ['golden retriever', 'otter', 'lesser panda', 'geyser', 'macaw', 'valley', 'balloon', 'arctic fox'];
+// SAMPLE_COLUMNS (static/js/samples.js, written by _tools/build_assets.py) maps '<group>/<option>' to the
+// eight [class id, noise seed, class name] columns of that comparison.
 
 // Rows: [label, folder, FID-50K without guidance (two-seed mean), isLAP].
 const SAMPLE_GROUPS = {
@@ -50,10 +51,12 @@ const SAMPLE_GROUPS = {
 
 const state = { group: 'teachers', option: 'MAE', col: 0 };
 
+const columns = () => SAMPLE_COLUMNS[`${state.group}/${state.option}`];
+
 // A folder containing '/' names another group's samples (the SD-VAE row reuses the teacher runs).
-function samplePath(group, folder, col) {
+function samplePath(group, folder, [cls, seed]) {
   const dir = folder.includes('/') ? folder : `${group}/${folder}`;
-  return `static/samples/${dir}/${String(col).padStart(2, '0')}.jpg`;
+  return `static/samples/${dir}/${cls}_s${seed}.jpg`;
 }
 
 function el(tag, attrs = {}, children = []) {
@@ -98,13 +101,13 @@ function renderGrid() {
   const grid = document.getElementById('sample-grid');
   const rows = SAMPLE_GROUPS[state.group].options[state.option];
   const nodes = [el('div')];
-  CLASSES.forEach((c) => nodes.push(el('div', { class: 'col-head', text: c })));
+  columns().forEach((c) => nodes.push(el('div', { class: 'col-head', text: c[2] })));
   rows.forEach(([label, folder, fid, isLap]) => {
     const lab = el('div', { class: 'sample-label' + (isLap ? ' is-lap' : '') }, [label, el('span', { class: 'fid', text: `FID ${fid}` })]);
     nodes.push(lab);
-    CLASSES.forEach((c, col) => {
+    columns().forEach((c, col) => {
       const img = el('img', {
-        src: samplePath(state.group, folder, col), alt: `${label}: ${c}`, loading: 'lazy', width: '256', height: '256',
+        src: samplePath(state.group, folder, c), alt: `${label}: ${c[2]}`, loading: 'lazy', width: '256', height: '256',
       });
       img.addEventListener('click', () => openCompare(col));
       nodes.push(img);
@@ -122,11 +125,12 @@ function render() {
 // ---- comparison modal: one class across all rows, at full resolution ----
 function renderCompare() {
   const rows = SAMPLE_GROUPS[state.group].options[state.option];
+  const c = columns()[state.col];
   document.getElementById('compare-title').textContent =
-    `${CLASSES[state.col]} · ${SAMPLE_GROUPS[state.group].label}: ${state.option}`;
+    `${c[2]} · ${SAMPLE_GROUPS[state.group].label}: ${state.option}`;
   document.getElementById('compare-row').replaceChildren(...rows.map(([label, folder, fid, isLap]) =>
     el('figure', {}, [
-      el('img', { src: samplePath(state.group, folder, state.col), alt: `${label}: ${CLASSES[state.col]}`, width: '256', height: '256' }),
+      el('img', { src: samplePath(state.group, folder, c), alt: `${label}: ${c[2]}`, width: '256', height: '256' }),
       el('figcaption', { class: isLap ? 'is-lap' : '', text: `${label} (FID ${fid})` }),
     ])));
 }
@@ -142,7 +146,8 @@ function closeCompare() {
 }
 
 function stepCompare(delta) {
-  state.col = (state.col + delta + CLASSES.length) % CLASSES.length;
+  const n = columns().length;
+  state.col = (state.col + delta + n) % n;
   renderCompare();
 }
 
