@@ -40,7 +40,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="static/css/index.css?v=20261007c">
+  <link rel="stylesheet" href="static/css/index.css?v=20261008">
 
   <script>
     window.MathJax = {
@@ -112,6 +112,25 @@
     </div>
   </div>
 </section>
+
+<!-- ================= Video ================= -->
+<section class="hero teaser-video">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser-video" autoplay muted loop playsinline controls preload="auto" width="1920" height="1080"
+             poster="static/images/lap_teaser_poster.jpg" aria-label="Animated overview of LAP (53 seconds, no audio)">
+        <source src="static/videos/lap_teaser.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</section>
+<script>
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const v = document.getElementById('teaser-video');
+    v.removeAttribute('autoplay');
+    v.pause();
+  }
+</script>
 
 <!-- ================= Teaser ================= -->
 <section class="hero teaser">

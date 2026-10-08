@@ -37,6 +37,13 @@ body { font-family: 'Noto Sans', sans-serif; color: var(--ink); background: #fff
 .teaser img { display: block; width: 100%; margin: 0 auto; }
 .teaser .subtitle { font-size: 1.1rem; line-height: 1.55; margin-top: 1rem; color: #4a4a4a; }
 
+/* ---------- teaser video ---------- */
+.teaser-video .hero-body { padding-top: 0.5rem; padding-bottom: 1.25rem; }
+.teaser-video video {
+  display: block; width: 100%; height: auto; aspect-ratio: 16 / 9;
+  border-radius: 12px; background: #09090b; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+}
+
 
 /* ---------- body sections ---------- */
 .section { padding: 2.75rem 1.5rem; }
