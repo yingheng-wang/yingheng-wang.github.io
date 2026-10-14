@@ -43,6 +43,8 @@ body { font-family: 'Noto Sans', sans-serif; color: var(--ink); background: #fff
   display: block; width: 100%; height: auto; aspect-ratio: 16 / 9;
   border-radius: 12px; background: #09090b; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
 }
+.teaser-video .video-actions { display: flex; justify-content: center; margin-top: 0.85rem; }
+.teaser-video .video-actions[hidden] { display: none; }
 
 
 /* ---------- body sections ---------- */
