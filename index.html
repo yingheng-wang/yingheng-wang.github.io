@@ -85,7 +85,7 @@
     <section aria-labelledby="bio">
       <h2 id="bio">About</h2>
       <p>
-        I am a final-year PhD candidate in Computer Science at Cornell University with <a href="http://www.cs.cornell.edu/gomes/" target="_blank" rel="noopener noreferrer">Carla P. Gomes</a>. I also
+        I am a final-year PhD candidate in Computer Science at Cornell University, advised by <a href="https://www.cs.cornell.edu/gomes/" target="_blank" rel="noopener noreferrer">Carla P. Gomes</a>. I also
         work closely with
         <a href="https://www.cs.cornell.edu/~kuleshov/" target="_blank" rel="noopener noreferrer">Volodymyr Kuleshov</a>
         and
@@ -95,18 +95,18 @@
           href="https://blogs.cornell.edu/cornell-ai-climate/basic-page/" target="_blank"
           rel="noopener noreferrer">AI-LEAF Institute</a>.
         My research studies <strong>knowledge-centric AI with an emphasis on scientific reasoning</strong>.
-        I was also student researcher at
+        I was also a student researcher at
         <a href="https://www.theverge.com/2018/6/5/17431012/amazon-grand-challenge-moonshot-lab-google-glass-creator-babak-parviz"
           target="_blank" rel="noopener noreferrer">Amazon Grand Challenge</a>,
-        <a href="https://aws.amazon.com/ai/" target="_blank" rel="noopener noreferrer">AWS AI Lab</a>,
-        <a href="https://www.microsoft.com/en-us/research/lab/microsoft-research-asia/?msockid=3878bc547c056f933bdfaa947d2b6e60"
-          target="_blank" rel="noopener noreferrer">Microsoft Research</a>, and
-        <a href="https://www.nec-labs.com" target="_blank" rel="noopener noreferrer">NEC Lab America</a>,
-        where my research led to impactful papers and patents on computational antibody design, protein language models,
-        time-series foundation models, and efficient neural architectures.
-        My research has been generously supported by Cornell <a
+        <a href="https://aws.amazon.com/ai/" target="_blank" rel="noopener noreferrer">Amazon AWS AI Research &amp; Education</a>,
+        <a href="https://www.microsoft.com/en-us/research/lab/microsoft-research-asia/"
+          target="_blank" rel="noopener noreferrer">Microsoft Research Asia</a>, and
+        <a href="https://www.nec-labs.com" target="_blank" rel="noopener noreferrer">NEC Laboratories America</a>,
+        where my research led to impactful papers and patents on computational antibody design, long-context protein language models,
+        time-series representation learning, and expressive graph neural networks.
+        My research has been generously supported by the Cornell <a
           href="https://news.cornell.edu/stories/2011/12/cornell-awards-10-life-science-fellowships" target="_blank"
-          rel="noopener noreferrer">Presidential Life Science Fellowship</a>.
+          rel="noopener noreferrer">Presidential Life Science Fellowship</a> and the Google AI Academic Program.
       </p>
       <p style="color: #d40000; font-weight: 600;">
         I am currently on the job market &mdash; please feel free to reach out!
@@ -116,68 +116,55 @@
     <section aria-labelledby="interests">
       <h2 id="interests">Research Interests</h2>
       <p>
-        My research centers on developing knowledge-centric AI methods for scientific reasoning, which integrate physical and domain knowledge into
-        modern AI techniques to improve their efficacy, efficiency, robustness, and interpretability.
-        Current research topics include:
+        My research develops <strong>knowledge-centric AI for scientific discovery</strong>: AI that uses scientific knowledge
+        to shape how it predicts, learns, and reasons, especially when data are limited and predictions must go beyond observed conditions.
+        I pursue this through three complementary approaches &mdash; scientific constraints, representations, and feedback &mdash; and help
+        build shared infrastructure for AI and science, in close collaboration with physicists, chemists, and biologists:
+      </p>
       <ul>
-        <li><strong>Learning with physical knowledge</strong>: constrained learning <a href="#"
-            class="pub-tag">ICML26</a>,
-          symmetry learning <a href="#"
-            class="pub-tag">AAAI24</a>,
-          disentangled representations <a href="#"
-            class="pub-tag">ICML23</a>
+        <li><strong>Scientific constraints</strong> (building science into reasoning):
+          physics-constrained spectrum prediction <a href="https://proceedings.mlr.press/v306/wang26ka.html" target="_blank" rel="noopener" class="pub-tag" title="Deep Scientific Reasoning under Physical Constraints">ICML26</a>
+            <a href="index.html" class="pub-tag" title="DeepDOSReasoner (paper coming soon)">Science Advances</a>
+            <a href="https://ojs.aaai.org/index.php/AAAI/article/view/27781" target="_blank" rel="noopener" class="pub-tag" title="Conformal Crystal Graph Transformer">AAAI24</a>
+            <a href="https://arxiv.org/pdf/2302.01486" target="_blank" rel="noopener" class="pub-tag" title="Xtal2DoS">NeurIPS22 AI4Science</a>,
+          constrained search &amp; probabilistic inference for molecular identification <a href="https://ojs.aaai.org/index.php/AAAI/article/view/39692" target="_blank" rel="noopener" class="pub-tag" title="Probabilistic Coin Change Problem">AAAI26</a>
+            <a href="index.html" class="pub-tag" title="GEMS (paper coming soon)">ICLR27</a>
+            <a href="https://doi.org/10.64898/2026.08.05.743095" target="_blank" rel="noopener" class="pub-tag" title="Charting the Small-Molecule Universe from Mass Spectra">Nature</a>,
+          generative inverse imaging <a href="https://openaccess.thecvf.com/content/ICCV2025W/CV4MS/papers/Belardi_Improving_Multislice_Electron_Ptychography_with_a_Generative_Prior_ICCVW_2025_paper.pdf" target="_blank" rel="noopener" class="pub-tag" title="Improving Multislice Electron Ptychography with a Generative Prior">ICCV25 CV4MS</a>
+            <a href="https://academic.oup.com/mam/article/31/Supplement_1/ozaf048.1059/8213341" target="_blank" rel="noopener" class="pub-tag" title="3D Ptychographic Inverse Imaging with Generative Diffusion Models">M&amp;M25</a>
         </li>
-        <li><strong>Learning under limited resources</strong>: self-supervised &amp; unsupervised learning <a href="#"
-            class="pub-tag">AAAI23</a>
-          <a href="#"
-            class="pub-tag">TheWebConf</a>,
-          multi-modal learning <a href="#"
-            class="pub-tag">ICLR25
-            AI4Mat</a>
-          expressive and efficient neural networks <a href="#"
-            class="pub-tag">ICLR25</a>
-          <a href="#"
-            class="pub-tag">NeurIPS23</a>
-          <a href="#"
-            class="pub-tag">ICML22</a>
+        <li><strong>Scientific representations</strong> (turning knowledge into capability):
+          representation alignment &amp; disentanglement in generative models <a href="papers/LAP.pdf" target="_blank" rel="noopener" class="pub-tag" title="Purify Before You Align (LAP)">ICLR27</a>
+            <a href="https://arxiv.org/pdf/2306.08757" target="_blank" rel="noopener" class="pub-tag" title="InfoDiffusion">ICML23</a>,
+          expressive variational inference <a href="https://ojs.aaai.org/index.php/AAAI/article/view/34194" target="_blank" rel="noopener" class="pub-tag" title="Denoising Diffusion Variational Inference">AAAI25</a>,
+          long-context protein language models <a href="papers/LCPLM.pdf" target="_blank" rel="noopener" class="pub-tag" title="LC-PLM">ICLR26 Journal Track</a>,
+          self-supervised molecular &amp; drug-interaction learning <a href="https://arxiv.org/pdf/2010.11711" target="_blank" rel="noopener" class="pub-tag" title="MIRACLE: Multi-View Graph Contrastive Learning for Drug-Drug Interaction">WWW21</a>
+            <a href="https://ieeexplore.ieee.org/document/9669302" target="_blank" rel="noopener" class="pub-tag" title="Molecular Graph Contrastive Learning with Parameterized Explainable Augmentations">BIBM21</a>
+            <a href="https://ieeexplore.ieee.org/document/9669794" target="_blank" rel="noopener" class="pub-tag" title="MolCloze">BIBM21</a>,
+          latent reasoning in LLMs <a href="index.html" class="pub-tag" title="What Makes a Good Latent Thought for Reasoning? (paper coming soon)">ICLR27</a>,
+          multi-modal materials representations <a href="https://openreview.net/pdf?id=ntXAzxKPTh" target="_blank" rel="noopener" class="pub-tag" title="MatFusion">ICLR25 AI4Mat</a>
         </li>
-        <li><strong>Reasoning &amp; inference with learning</strong>: reinforcement learning <a href="#"
-            class="pub-tag">ICLR26</a>
-          <a href="#"
-            class="pub-tag">ICLR26</a>,
-          constrained reasoning <a href="#"
-            class="pub-tag">ICLR26</a> <a href="#"
-            class="pub-tag">AAAI26</a>
-          <a href="#"
-            class="pub-tag">AAAI26</a>,
-          probabilistic inference <a href="#"
-            class="pub-tag">AAAI25</a>
+        <li><strong>Scientific feedback</strong> (from limited evidence to discovery):
+          feedback-efficient adaptation of generative models <a href="index.html" class="pub-tag" title="19 Degrees of Freedom Beat Full-Parameter Fine-Tuning in Fixed-Backbone Antibody Design (paper coming soon)">ICLR27</a>,
+          reinforcement learning for honest reasoning <a href="https://arxiv.org/pdf/2511.09222" target="_blank" rel="noopener" class="pub-tag" title="Toward Honest Language Models for Deductive Reasoning">TMLR</a>,
+          continual learning for agents <a href="index.html" class="pub-tag" title="Fast and Slow Online Learning for Agents (paper coming soon)">NeurIPS26 TTCL</a>,
+          LLM agents with execution feedback <a href="https://arxiv.org/pdf/2506.07972" target="_blank" rel="noopener" class="pub-tag" title="HeuriGym">ICLR26</a>
         </li>
-        <li><strong>Generative AI</strong>: large language models <a href="#"
-            class="pub-tag">ICLR25</a>
-          <a href="#"
-            class="pub-tag">ICML26</a>, diffusion &amp; flow-based models <a href="#"
-            class="pub-tag">ICML23</a>
-          <a href="#"
-            class="pub-tag">AAAI25</a>
-          <a href="#"
-            class="pub-tag">ICCV25
-            CV4MS</a>, generative agents <a href="#"
-            class="pub-tag">ICLR26</a>
+        <li><strong>Shared infrastructure</strong> (benchmarks &amp; tools for AI and science):
+          materials discovery benchmarks <a href="https://arxiv.org/pdf/2307.05378" target="_blank" rel="noopener" class="pub-tag" title="M2Hub">NeurIPS23 D&amp;B</a>,
+          agentic optimization benchmarks <a href="https://arxiv.org/pdf/2506.07972" target="_blank" rel="noopener" class="pub-tag" title="HeuriGym">ICLR26</a>,
+          evaluating scientific reasoning of LLMs <a href="https://www.nature.com/articles/s41586-025-09962-4" target="_blank" rel="noopener" class="pub-tag" title="Humanity&#x27;s Last Exam">Nature</a>
+            <a href="https://proceedings.mlr.press/v306/lv26b.html" target="_blank" rel="noopener" class="pub-tag" title="AtomWorld">ICML26</a>,
+          2-bit LLM fine-tuning on consumer GPUs <a href="https://openreview.net/forum?id=r9p9CV52MV" target="_blank" rel="noopener" class="pub-tag" title="ModuLoRA">ICLR25 Journal Track</a>,
+          ML for laboratory medicine <a href="https://pubmed.ncbi.nlm.nih.gov/37738611/" target="_blank" rel="noopener" class="pub-tag" title="AACC PTHrP ML Challenge winning solution">Clinical Chemistry</a>,
+          generative molecular design review <a href="https://www.nature.com/articles/s42256-024-00843-5" target="_blank" rel="noopener" class="pub-tag" title="Machine Learning-Aided Generative Molecular Design">Nature Machine Intelligence</a>
         </li>
-        <li><strong>Applications</strong>: scientific discovery (biology, materials, medicine, and sustainability)</li>
-        <li><strong>Taxonomy & Datasets & Benchmarks</strong>: genrative molecule design <a href="#"
-            class="pub-tag">Nature
-            Machine Intelligence</a>, machine learning for materials discovery <a href="#"
-            class="pub-tag">NeurIPS23</a>,
-          structured data augmentation <a href="#"
-            class="pub-tag">IEEE
-            Data Engineering Bulletin</a>, expert-level combinatorial reasoning of LLMs <a href="#"
-            class="pub-tag">ICLR26</a>, expert-level scientific reasoning of LLMs <a href="#"
-            class="pub-tag">Nature</a></li>
+        <li><strong>Scientific domains</strong>: materials science (spectra &amp; materials screening), chemistry (molecular identification),
+          biology (protein design &amp; genomics), and medicine</li>
       </ul>
-      These thrusts converge to build AI systems that can reason, learn efficiently, and generalize robustly in complex
-      real-world scenarios, ultimately advancing scientific discovery and innovation.
+      <p>
+        Looking ahead, I aim to build <strong>knowledge-centric scientific agents</strong> that improve through evidence rather than
+        generation alone, via hypothesis-driven inference, evidence-calibrated adaptation, and learned scientific abstractions.
       </p>
     </section>
 
@@ -186,7 +173,35 @@
       <div class="cards">
         <article class="paper-card">
           <h3 class="paper-title">
-            DeepDOSReasoner: Physics-Grounded Reasoning for Density of States Prediction
+            Purify Before You Align: Improving Representation Alignment for Diffusion Models
+          </h3>
+
+          <p class="paper-authors">
+            <strong>Yingheng Wang</strong>, Yaoqiang Li, Yaqin Wu, Junwen Bai, Jiatao Gu,
+            Christopher De Sa, Volodymyr Kuleshov
+          </p>
+
+          <p class="paper-venue">
+            <em>ICLR 2027</em><br>
+            <em>(Under Review)</em>
+          </p>
+
+          <div class="paper-links">
+            <a href="papers/LAP.pdf" target="_blank" rel="noopener">
+              📄 Paper
+            </a>
+            <a href="LAP/" target="_blank" rel="noopener">
+              🌐 Project
+            </a>
+            <a href="https://github.com/yingheng-wang/LAP" target="_blank" rel="noopener">
+              🌐 Code
+            </a>
+          </div>
+        </article>
+
+        <article class="paper-card">
+          <h3 class="paper-title">
+            DeepDOSReasoner: Physics-Grounded Reasoning for Density-of-States Prediction and Materials Discovery
           </h3>
 
           <p class="paper-authors">
@@ -195,23 +210,14 @@
           </p>
 
           <p class="paper-venue">
-            <em>Nature Computational Science 2026</em><br>
+            <em>Science Advances 2026</em><br>
             <em>(Under Review)</em>
           </p>
-
-          <div class="paper-links">
-            <a href="PAPER_URL_HERE" target="_blank" rel="noopener">
-              📄 Paper
-            </a>
-            <a href="CODE_URL_HERE" target="_blank" rel="noopener">
-              🌐 Code
-            </a>
-          </div>
         </article>
 
         <article class="paper-card">
           <h3 class="paper-title">
-            AbMPO: Multi-Objective Policy Optimization for Affinity-Calibrated Antibody Sequence Design
+            19 Degrees of Freedom Beat Full-Parameter Fine-Tuning in Fixed-Backbone Antibody Design
           </h3>
 
           <p class="paper-authors">
@@ -220,18 +226,9 @@
           </p>
 
           <p class="paper-venue">
-            <em>NeurIPS 2026</em><br>
+            <em>ICLR 2027</em><br>
             <em>(Under Review)</em>
           </p>
-
-          <div class="paper-links">
-            <a href="PAPER_URL_HERE" target="_blank" rel="noopener">
-              📄 Paper
-            </a>
-            <a href="CODE_URL_HERE" target="_blank" rel="noopener">
-              🌐 Code
-            </a>
-          </div>
         </article>
 
         <article class="paper-card">
@@ -245,15 +242,11 @@
 
           <p class="paper-venue">
             <em>ICML 2026</em>
-            <em></em>
           </p>
 
           <div class="paper-links">
-            <a href="PAPER_URL_HERE" target="_blank" rel="noopener">
+            <a href="https://proceedings.mlr.press/v306/wang26ka.html" target="_blank" rel="noopener">
               📄 Paper
-            </a>
-            <a href="CODE_URL_HERE" target="_blank" rel="noopener">
-              🌐 Code
             </a>
           </div>
         </article>
@@ -285,18 +278,18 @@
 
         <article class="paper-card">
           <h3 class="paper-title">
-            LC-PLM: Long-context Protein Language Modeling Using Bidirectional Mamba with Shared Projection Layers
+            LC-PLM: Long-Context Protein Language Modeling Using Bidirectional Mamba with Shared Projection Layers
           </h3>
           <p class="paper-authors">
             <strong>Yingheng Wang</strong>, Zichen Wang, Gil Sadeh, Luca Zancato, Alessandro Achille, George Karypis,
-            Huzefa Rangwala.
+            Huzefa Rangwala
           </p>
           <p class="paper-venue">
-            <em>ICLR 2026</em><br>
-            <em><span style="color:red;">🏆 TMLR Featured Certificate</span></em>
+            <em>ICLR 2026 Journal Track</em><br>
+            <em><span style="color:red;">🏆 TMLR Featured Paper</span></em>
           </p>
           <div class="paper-links">
-            <a href="https://openreview.net/forum?id=dWvztQzfy4" target="_blank" rel="noopener">
+            <a href="papers/LCPLM.pdf" target="_blank" rel="noopener">
               📄 Paper
             </a>
             <a href="https://github.com/amazon-science/LC-PLM" target="_blank" rel="noopener">
@@ -323,31 +316,32 @@
             <a href="https://arxiv.org/pdf/2306.08757" target="_blank" rel="noopener">
               📄 Paper
             </a>
+            <a href="https://yingheng-wang.com/infodiffusion-page/" target="_blank" rel="noopener">
+              🌐 Project
+            </a>
             <a href="https://github.com/yingheng-wang/InfoDiffusion" target="_blank" rel="noopener">
               🌐 Code
             </a>
           </div>
         </article>
-
-
       </div>
       <p><a class="cta" href="publications.html">See full list &rarr;</a></p>
     </section>
 
     <section aria-labelledby="services">
       <h2 id="services">Services</h2>
-      <p><strong>Area Chair</strong>: NeurIPS (AI4Science), ICML (AI4Science).</p>
-      <p><strong>Conference Reviewer</strong>: ICML, NeurIPS, ICLR, AAAI, AISTATS, UAI, CVPR, ICCV, ECCV, COLM, KDD.</p>
-      <p><strong>Journal Reviewer</strong>: IEEE Transactions on Knowledge and Data Engineering (TKDE), Transactions on Machine Learning Research (TMLR),
-        Pattern Recognition, Bioinformatics, Journal of Biomedical Informatics (JBI).</p>
-      <p><strong>Workshop Reviewer/PC</strong>: NeurIPS (Math-AI, AI4Science, GenBio, GLFrontiers), ICLR (AGI, AI4Science), ICML (AI4Science), KDD (Health Day).</p>
-      <p><strong>Others</strong>: Co-organizer of Learning on Graph Conference (LoG 2025, 2024, 2023) local meetup, Cornell CS PhD Admission Committee Member (2025, 2024), Cornell CS Visit Day Czar.</p>
+      <p><strong>Workshop Area Chair</strong>: NeurIPS (AI4Science), ICML (AI4Science).</p>
+      <p><strong>Conference Reviewer</strong>: ICML (Gold Reviewer, 2026), NeurIPS, ICLR, AAAI, AISTATS, UAI, CVPR, ICCV, ECCV, COLM, ACL Rolling Review, KDD.</p>
+      <p><strong>Journal Reviewer</strong>: Science Advances, IEEE Transactions on Knowledge and Data Engineering (TKDE), IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI),
+        Transactions on Machine Learning Research (TMLR), Pattern Recognition, Bioinformatics, Journal of Biomedical Informatics (JBI).</p>
+      <p><strong>Workshop Reviewer/PC</strong>: NeurIPS (FMTS, Math-AI, AI4Science, GenBio, GLFrontiers), ICLR (AGI, AI4Science), ICML (AI4Science), KDD (Health Day).</p>
+      <p><strong>Others</strong>: Co-organizer of Learning on Graphs Conference (LoG 2025, 2024, 2023) local meetup, Cornell CS PhD Admissions Committee Member (2025, 2024), Cornell CS Visit Day Coordinator (2025, 2024).</p>
     </section>
   </main>
 
   <footer>
     <div class="wrapper">
-      &copy; 2026 Yingheng Wang &middot; Last updated: 2026-07-04
+      &copy; 2026 Yingheng Wang &middot; Last updated: 2026-10-13
     </div>
   </footer>
 </body>

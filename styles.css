@@ -249,6 +249,7 @@ section[aria-labelledby="highlights"] > p {
   font-size: 0.8em;
   border-radius: 4px;
   text-decoration: none;
+  white-space: nowrap;
 }
 .pub-tag:hover {
   background: #d4d4d4;
