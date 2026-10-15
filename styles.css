@@ -97,6 +97,26 @@ h1 { font-size: 3.1rem; line-height: 1.4; }
 h2 { font-size: 1.5rem; border-bottom: 2px solid var(--light-gray); padding-bottom: 6px; }
 
 .kicker { color: var(--muted); font-weight: 700; letter-spacing: .05em; text-transform: uppercase; font-size: 1.0rem; }
+.pronounce {
+display: flex;
+align-items: center;
+justify-content: center;
+flex-wrap: wrap;
+gap: 4px 8px;
+color: var(--muted);
+font-size: 1.0rem;
+margin: -0.4em 0 0.6em;
+}
+.pronounce-play {
+display: inline-flex;
+padding: 2px;
+border: 0;
+background: none;
+color: var(--link);
+cursor: pointer;
+}
+.pronounce-play:hover { color: var(--link-hover); }
+.pronounce-play svg { width: 18px; height: 18px; }
 
 /* Compact icon links - 社交媒体链接居中对齐 */
 .link-row {
