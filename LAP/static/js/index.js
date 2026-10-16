@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // Set this once the paper is on arXiv (e.g. '2610.01234'): it enables the
 // arXiv button and fills the BibTeX entry. Leave empty until then.
-const ARXIV_ID = '';
+const ARXIV_ID = '2610.20761';
 // ---------------------------------------------------------------------------
 
 // SAMPLE_COLUMNS (static/js/samples.js, written by _tools/build_assets.py) maps '<group>/<option>' to the
