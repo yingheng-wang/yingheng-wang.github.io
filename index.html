@@ -2,7 +2,8 @@
 <html lang="en-US">
 
 <head>
-  <link rel="stylesheet" href="styles.css?v=20261015">
+  <link rel="stylesheet" href="styles.css?v=20261024">
+  <link rel="stylesheet" href="nav.css?v=20261024">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -23,7 +24,19 @@
       <nav class="nav" aria-label="Primary">
         <a href="index.html">Home</a>
         <a href="publications.html">Publications</a>
-        <!-- Teaching and Group removed -->
+        <div class="nav-dropdown">
+          <button type="button" class="nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">Projects
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="nav-dropdown-menu">
+            <div class="nav-dropdown-panel">
+              <a href="LAP/">LAP<span>Purify Before You Align</span></a>
+              <a href="https://cornell-zhang.github.io/heurigym/" target="_blank" rel="noopener">HeuriGym<span>Agentic benchmark for LLM-crafted heuristics</span></a>
+              <a href="DDVI/">DDVI<span>Denoising Diffusion Variational Inference</span></a>
+              <a href="https://yingheng-wang.com/infodiffusion-page/" target="_blank" rel="noopener">InfoDiffusion<span>Information maximizing diffusion models</span></a>
+            </div>
+          </div>
+        </div>
       </nav>
     </div>
   </header>
@@ -178,206 +191,155 @@
 
     <section aria-labelledby="highlights">
       <h2 id="highlights">Selected Publications</h2>
-      <div class="cards">
-        <article class="paper-card">
-          <h3 class="paper-title">
-            Purify Before You Align: Improving Representation Alignment for Diffusion Models
-          </h3>
-
-          <p class="paper-authors">
-            <strong>Yingheng Wang</strong>, Yaoqiang Li, Yaqin Wu, Junwen Bai, Jiatao Gu,
-            Christopher De Sa, Volodymyr Kuleshov
-          </p>
-
-          <p class="paper-venue">
-            <em>ICLR 2027</em><br>
-            <em>(Under Review)</em>
-          </p>
-
-          <div class="paper-links">
-            <a href="https://arxiv.org/pdf/2610.20761" target="_blank" rel="noopener">
-              📄 Paper
-            </a>
-            <a href="LAP/" target="_blank" rel="noopener">
-              🌐 Project
-            </a>
-            <a href="https://github.com/yingheng-wang/LAP" target="_blank" rel="noopener">
-              🌐 Code
-            </a>
+      <div class="pub-rows">
+        <article class="pub-row">
+          <a class="pub-thumb" href="LAP/">
+            <img src="image/pubs/lap.jpg" alt="Figure from Purify Before You Align" loading="lazy">
+          </a>
+          <div class="pub-body">
+            <h3 class="pub-title"><a href="LAP/">Purify Before You Align: Improving Representation Alignment for Diffusion Models</a></h3>
+            <p class="pub-authors"><strong>Yingheng Wang</strong>, Yaoqiang Li, Yaqin Wu, Junwen Bai, Jiatao Gu, Christopher De Sa, Volodymyr Kuleshov</p>
+            <p class="pub-venue"><em>ICLR 2027 (under review)</em></p>
+            <p class="pub-links">
+            <a href="https://arxiv.org/pdf/2610.20761" target="_blank" rel="noopener">Paper</a> &middot;
+            <a href="LAP/">Project Page</a> &middot;
+            <a href="https://github.com/yingheng-wang/LAP" target="_blank" rel="noopener">Code</a>
+            </p>
+            <p class="pub-tldr">Removing locally predictable content from the teacher's features before alignment improves diffusion training, cutting FID by over 20% on ImageNet-256.</p>
           </div>
         </article>
 
-        <article class="paper-card">
-          <h3 class="paper-title">
-            DeepDOSReasoner: Physics-Grounded Reasoning for Density-of-States Prediction and Materials Discovery
-          </h3>
-
-          <p class="paper-authors">
-            <strong>Yingheng Wang</strong>, Francesco Ricci, Zhilong Wang, Tao Yu, Junwen Bai,
-            Xiangyun Lei, Shufeng Kong, Fengqi You, John M. Gregoire, Carla P. Gomes
-          </p>
-
-          <p class="paper-venue">
-            <em>Science Advances 2026</em><br>
-            <em>(Under Review)</em>
-          </p>
-        </article>
-
-        <article class="paper-card">
-          <h3 class="paper-title">
-            19 Degrees of Freedom Beat Full-Parameter Fine-Tuning in Fixed-Backbone Antibody Design
-          </h3>
-
-          <p class="paper-authors">
-            <strong>Yingheng Wang</strong>, Can Chen, Karla-Luise Herpoldt, Sukanya Sasmal,
-            Tommi Jaakkola, Marcus D. Collins, Shang Shang
-          </p>
-
-          <p class="paper-venue">
-            <em>ICLR 2027</em><br>
-            <em>(Under Review)</em>
-          </p>
-        </article>
-
-        <article class="paper-card">
-          <h3 class="paper-title">
-            Deep Scientific Reasoning under Physical Constraints: Structure-Aware Spectrum Prediction
-          </h3>
-
-          <p class="paper-authors">
-            <strong>Yingheng Wang</strong>, Tao Yu, Shufeng Kong, Francesco Ricci, John M. Gregoire, Carla P. Gomes
-          </p>
-
-          <p class="paper-venue">
-            <em>ICML 2026</em>
-          </p>
-
-          <div class="paper-links">
-            <a href="https://proceedings.mlr.press/v306/wang26ka.html" target="_blank" rel="noopener">
-              📄 Paper
-            </a>
+        <article class="pub-row">
+          <div class="pub-thumb pub-thumb-tile" aria-hidden="true">DeepDOS<br>Reasoner</div>
+          <div class="pub-body">
+            <h3 class="pub-title">DeepDOSReasoner: Physics-Grounded Reasoning for Density-of-States Prediction and Materials Discovery</h3>
+            <p class="pub-authors"><strong>Yingheng Wang</strong>, Francesco Ricci, Zhilong Wang, Tao Yu, Junwen Bai, Xiangyun Lei, Shufeng Kong, Fengqi You, John M. Gregoire, Carla P. Gomes</p>
+            <p class="pub-venue"><em>Science Advances 2026 (under review)</em></p>
+            <p class="pub-tldr">Spectrum predictions that conserve electronic states by construction; a DFT-validated prospective screen identified 25 materials with a rare electronic feature at nearly 10&times; enrichment.</p>
           </div>
         </article>
 
-        <article class="paper-card">
-          <h3 class="paper-title">
-            HeuriGym: An Agentic Benchmark for LLM-Crafted Heuristics in Combinatorial Optimization
-          </h3>
-
-          <p class="paper-authors">
-            Hongzheng Chen*, <strong>Yingheng Wang*</strong>, Yaohui Cai*, Hins Hu*, Jiajie Li*,
-            Shirley Huang, Chenhui Deng, Rongjian Liang, Shufeng Kong, Haoxing Ren,
-            Samitha Samaranayake, Carla P. Gomes, Zhiru Zhang
-          </p>
-
-          <p class="paper-venue">
-            <em>ICLR 2026</em>
-          </p>
-
-          <div class="paper-links">
-            <a href="https://arxiv.org/pdf/2506.07972" target="_blank" rel="noopener">
-              📄 Paper
-            </a>
-            <a href="https://github.com/cornell-zhang/heurigym" target="_blank" rel="noopener">
-              🌐 Code
-            </a>
+        <article class="pub-row">
+          <div class="pub-thumb pub-thumb-tile" aria-hidden="true">19 DoF</div>
+          <div class="pub-body">
+            <h3 class="pub-title">19 Degrees of Freedom Beat Full-Parameter Fine-Tuning in Fixed-Backbone Antibody Design</h3>
+            <p class="pub-authors"><strong>Yingheng Wang</strong>, Can Chen, Karla-Luise Herpoldt, Sukanya Sasmal, Tommi Jaakkola, Marcus D. Collins, Shang Shang</p>
+            <p class="pub-venue"><em>ICLR 2027 (under review)</em></p>
+            <p class="pub-tldr">Steering a frozen antibody design model through just 19 degrees of freedom outperforms full-parameter fine-tuning across three antigens and transfers to other design models.</p>
           </div>
         </article>
 
-        <article class="paper-card">
-          <h3 class="paper-title">
-            LC-PLM: Long-Context Protein Language Modeling Using Bidirectional Mamba with Shared Projection Layers
-          </h3>
-          <p class="paper-authors">
-            <strong>Yingheng Wang</strong>, Zichen Wang, Gil Sadeh, Luca Zancato, Alessandro Achille, George Karypis,
-            Huzefa Rangwala
-          </p>
-          <p class="paper-venue">
-            <em>ICLR 2026 Journal Track</em><br>
-            <em><span style="color:red;">🏆 TMLR Featured Paper</span></em>
-          </p>
-          <div class="paper-links">
-            <a href="papers/LCPLM.pdf" target="_blank" rel="noopener">
-              📄 Paper
-            </a>
-            <a href="https://github.com/amazon-science/LC-PLM" target="_blank" rel="noopener">
-              🌐 Code
-            </a>
+        <article class="pub-row">
+          <a class="pub-thumb" href="https://proceedings.mlr.press/v306/wang26ka.html" target="_blank" rel="noopener">
+            <img src="image/pubs/dsr.jpg" alt="Figure from Deep Scientific Reasoning under Physical Constraints" loading="lazy">
+          </a>
+          <div class="pub-body">
+            <h3 class="pub-title"><a href="https://proceedings.mlr.press/v306/wang26ka.html" target="_blank" rel="noopener">Deep Scientific Reasoning under Physical Constraints: Structure-Aware Spectrum Prediction</a></h3>
+            <p class="pub-authors"><strong>Yingheng Wang</strong>, Tao Yu, Shufeng Kong, Francesco Ricci, John M. Gregoire, Carla P. Gomes</p>
+            <p class="pub-venue"><em>ICML 2026</em></p>
+            <p class="pub-links">
+            <a href="https://proceedings.mlr.press/v306/wang26ka.html" target="_blank" rel="noopener">Paper</a>
+            </p>
+            <p class="pub-tldr">A spectrum predictor that obeys physical conservation laws by construction while preserving the sharp features that matter for discovery, such as band edges.</p>
           </div>
         </article>
 
-        <article class="paper-card">
-          <h3 class="paper-title">
-            InfoDiffusion: Representation Learning Using Information Maximizing Diffusion Models
-          </h3>
-
-          <p class="paper-authors">
-            <strong>Yingheng Wang</strong>, Yair Schiff, Aaron Gokaslan, Weishen Pan,
-            Fei Wang, Christopher De Sa, Volodymyr Kuleshov
-          </p>
-
-          <p class="paper-venue">
-            <em>ICML 2023</em>
-          </p>
-
-          <div class="paper-links">
-            <a href="https://arxiv.org/pdf/2306.08757" target="_blank" rel="noopener">
-              📄 Paper
-            </a>
-            <a href="https://yingheng-wang.com/infodiffusion-page/" target="_blank" rel="noopener">
-              🌐 Project
-            </a>
-            <a href="https://github.com/yingheng-wang/InfoDiffusion" target="_blank" rel="noopener">
-              🌐 Code
-            </a>
+        <article class="pub-row">
+          <a class="pub-thumb" href="https://cornell-zhang.github.io/heurigym/" target="_blank" rel="noopener">
+            <img src="image/pubs/heurigym.jpg" alt="Figure from HeuriGym" loading="lazy">
+          </a>
+          <div class="pub-body">
+            <h3 class="pub-title"><a href="https://cornell-zhang.github.io/heurigym/" target="_blank" rel="noopener">HeuriGym: An Agentic Benchmark for LLM-Crafted Heuristics in Combinatorial Optimization</a></h3>
+            <p class="pub-authors">Hongzheng Chen*, <strong>Yingheng Wang*</strong>, Yaohui Cai*, Hins Hu*, Jiajie Li*, Shirley Huang, Chenhui Deng, Rongjian Liang, Shufeng Kong, Haoxing Ren, Samitha Samaranayake, Carla P. Gomes, Zhiru Zhang</p>
+            <p class="pub-venue"><em>ICLR 2026</em></p>
+            <p class="pub-links">
+            <a href="https://arxiv.org/pdf/2506.07972" target="_blank" rel="noopener">Paper</a> &middot;
+            <a href="https://cornell-zhang.github.io/heurigym/" target="_blank" rel="noopener">Project Page</a> &middot;
+            <a href="https://github.com/cornell-zhang/heurigym" target="_blank" rel="noopener">Code</a>
+            </p>
+            <p class="pub-tldr">An open-ended agentic benchmark in which LLMs design heuristics for real-world scientific and engineering optimization problems, guided by verifiable execution feedback.</p>
           </div>
         </article>
 
-        <article class="paper-card">
-          <h3 class="paper-title">
-            M<sup>2</sup>Hub: Unlocking the Potential of Machine Learning for Materials Discovery
-          </h3>
-
-          <p class="paper-authors">
-            Yuanqi Du*, <strong>Yingheng Wang*</strong>, Yining Huang, Jianan Canal Li, Yanqiao Zhu,
-            Tian Xie, Chenru Duan, John M. Gregoire, Carla P. Gomes
-          </p>
-
-          <p class="paper-venue">
-            <em>NeurIPS 2023</em>
-          </p>
-
-          <div class="paper-links">
-            <a href="https://arxiv.org/pdf/2307.05378" target="_blank" rel="noopener">
-              📄 Paper
-            </a>
-            <a href="https://github.com/yuanqidu/M2Hub" target="_blank" rel="noopener">
-              🌐 Code
-            </a>
+        <article class="pub-row">
+          <a class="pub-thumb" href="papers/LCPLM.pdf" target="_blank" rel="noopener">
+            <img src="image/pubs/lcplm.jpg" alt="Figure from LC-PLM" loading="lazy">
+          </a>
+          <div class="pub-body">
+            <h3 class="pub-title"><a href="papers/LCPLM.pdf" target="_blank" rel="noopener">LC-PLM: Long-Context Protein Language Modeling Using Bidirectional Mamba with Shared Projection Layers</a></h3>
+            <p class="pub-authors"><strong>Yingheng Wang</strong>, Zichen Wang, Gil Sadeh, Luca Zancato, Alessandro Achille, George Karypis, Huzefa Rangwala</p>
+            <p class="pub-venue"><em>ICLR 2026 Journal Track</em> &middot; <span class="pub-award">🏆 TMLR Featured Paper</span></p>
+            <p class="pub-links">
+            <a href="papers/LCPLM.pdf" target="_blank" rel="noopener">Paper</a> &middot;
+            <a href="https://github.com/amazon-science/LC-PLM" target="_blank" rel="noopener">Code</a>
+            </p>
+            <p class="pub-tldr">A long-context protein language model that captures higher-order protein interaction structure, moving beyond pairwise links and local sequence patterns.</p>
           </div>
         </article>
 
-        <article class="paper-card">
-          <h3 class="paper-title">
-            Multi-View Graph Contrastive Representation Learning for Drug-Drug Interaction Prediction
-          </h3>
+        <article class="pub-row">
+          <a class="pub-thumb" href="DDVI/">
+            <img src="image/pubs/ddvi.jpg" alt="Figure from Denoising Diffusion Variational Inference" loading="lazy">
+          </a>
+          <div class="pub-body">
+            <h3 class="pub-title"><a href="DDVI/">Denoising Diffusion Variational Inference: Diffusion Models as Expressive Variational Posteriors</a></h3>
+            <p class="pub-authors"><strong>Yingheng Wang*</strong>, Wasu Top Piriyakulkij*, Volodymyr Kuleshov</p>
+            <p class="pub-venue"><em>AAAI 2025</em></p>
+            <p class="pub-links">
+            <a href="https://ojs.aaai.org/index.php/AAAI/article/view/34194" target="_blank" rel="noopener">Paper</a> &middot;
+            <a href="DDVI/">Project Page</a> &middot;
+            <a href="https://github.com/yingheng-wang/DDVI" target="_blank" rel="noopener">Code</a>
+            </p>
+            <p class="pub-tldr">Uses diffusion models as expressive variational posteriors for approximate inference, uncovering hidden structure in data such as genetic ancestry.</p>
+          </div>
+        </article>
 
-          <p class="paper-authors">
-            <strong>Yingheng Wang</strong>, Yaosen Min, Xin Chen, Ji Wu
-          </p>
+        <article class="pub-row">
+          <a class="pub-thumb" href="https://yingheng-wang.com/infodiffusion-page/" target="_blank" rel="noopener">
+            <img src="image/pubs/infodiffusion.jpg" alt="Figure from InfoDiffusion" loading="lazy">
+          </a>
+          <div class="pub-body">
+            <h3 class="pub-title"><a href="https://yingheng-wang.com/infodiffusion-page/" target="_blank" rel="noopener">InfoDiffusion: Representation Learning Using Information Maximizing Diffusion Models</a></h3>
+            <p class="pub-authors"><strong>Yingheng Wang</strong>, Yair Schiff, Aaron Gokaslan, Weishen Pan, Fei Wang, Christopher De Sa, Volodymyr Kuleshov</p>
+            <p class="pub-venue"><em>ICML 2023</em></p>
+            <p class="pub-links">
+            <a href="https://arxiv.org/pdf/2306.08757" target="_blank" rel="noopener">Paper</a> &middot;
+            <a href="https://yingheng-wang.com/infodiffusion-page/" target="_blank" rel="noopener">Project Page</a> &middot;
+            <a href="https://github.com/yingheng-wang/InfoDiffusion" target="_blank" rel="noopener">Code</a>
+            </p>
+            <p class="pub-tldr">Augments diffusion models with information-maximizing latent variables to learn disentangled, controllable representations.</p>
+          </div>
+        </article>
 
-          <p class="paper-venue">
-            <em>The Web Conference (WWW) 2021</em><br>
-            <em><span style="color:red;">🏆 Best Paper Award, AAAI Graph Learning Workshop</span></em>
-          </p>
+        <article class="pub-row">
+          <a class="pub-thumb" href="https://arxiv.org/pdf/2307.05378" target="_blank" rel="noopener">
+            <img src="image/pubs/m2hub.jpg" alt="Figure from M2Hub" loading="lazy">
+          </a>
+          <div class="pub-body">
+            <h3 class="pub-title"><a href="https://arxiv.org/pdf/2307.05378" target="_blank" rel="noopener">M<sup>2</sup>Hub: Unlocking the Potential of Machine Learning for Materials Discovery</a></h3>
+            <p class="pub-authors">Yuanqi Du*, <strong>Yingheng Wang*</strong>, Yining Huang, Jianan Canal Li, Yanqiao Zhu, Tian Xie, Chenru Duan, John M. Gregoire, Carla P. Gomes</p>
+            <p class="pub-venue"><em>NeurIPS 2023</em></p>
+            <p class="pub-links">
+            <a href="https://arxiv.org/pdf/2307.05378" target="_blank" rel="noopener">Paper</a> &middot;
+            <a href="https://github.com/yuanqidu/M2Hub" target="_blank" rel="noopener">Code</a>
+            </p>
+            <p class="pub-tldr">An integrated machine learning benchmarking platform for materials discovery, with 9 datasets and 56 tasks spanning screening, design, and simulation.</p>
+          </div>
+        </article>
 
-          <div class="paper-links">
-            <a href="https://arxiv.org/pdf/2010.11711" target="_blank" rel="noopener">
-              📄 Paper
-            </a>
-            <a href="https://github.com/yingheng-wang/MIRACLE" target="_blank" rel="noopener">
-              🌐 Code
-            </a>
+        <article class="pub-row">
+          <a class="pub-thumb" href="https://arxiv.org/pdf/2010.11711" target="_blank" rel="noopener">
+            <img src="image/pubs/miracle.jpg" alt="Figure from Multi-View Graph Contrastive Representation Learning for Drug-Drug Interaction Prediction" loading="lazy">
+          </a>
+          <div class="pub-body">
+            <h3 class="pub-title"><a href="https://arxiv.org/pdf/2010.11711" target="_blank" rel="noopener">Multi-View Graph Contrastive Representation Learning for Drug-Drug Interaction Prediction</a></h3>
+            <p class="pub-authors"><strong>Yingheng Wang</strong>, Yaosen Min, Xin Chen, Ji Wu</p>
+            <p class="pub-venue"><em>The Web Conference (WWW) 2021</em> &middot; <span class="pub-award">🏆 Best Paper Award, AAAI Graph Learning Workshop</span></p>
+            <p class="pub-links">
+            <a href="https://arxiv.org/pdf/2010.11711" target="_blank" rel="noopener">Paper</a> &middot;
+            <a href="https://github.com/yingheng-wang/MIRACLE" target="_blank" rel="noopener">Code</a>
+            </p>
+            <p class="pub-tldr">Multi-view graph contrastive learning that combines molecular structure with the drug interaction graph to predict drug-drug interactions.</p>
           </div>
         </article>
       </div>
@@ -400,6 +362,7 @@
       &copy; 2026 Yingheng Wang &middot; Last updated: 2026-10-13
     </div>
   </footer>
+  <script src="nav.js?v=20261024" defer></script>
 </body>
 
 </html>

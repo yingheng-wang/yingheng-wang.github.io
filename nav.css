@@ -1,0 +1,54 @@
+/* Projects dropdown in the site header (shared by index.html and publications.html) */
+.nav { align-items: center; }
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.nav-dropdown-toggle:hover { text-decoration: underline; }
+.nav-dropdown-toggle svg { width: 14px; height: 14px; transition: transform .15s ease; }
+.nav-dropdown.open .nav-dropdown-toggle svg { transform: rotate(180deg); }
+
+/* padding-top bridges the gap so the menu stays open while the pointer moves onto it */
+.nav-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  padding-top: 10px;
+  z-index: 20;
+}
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown.open .nav-dropdown-menu { display: block; }
+.nav-dropdown-panel {
+  min-width: 260px;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+}
+.nav .nav-dropdown-panel a {
+  display: block;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #222;
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration: none;
+}
+.nav .nav-dropdown-panel a:hover { background: #f5f5f5; color: #B31B1B; text-decoration: none; }
+.nav-dropdown-panel a span {
+  display: block;
+  color: #555;
+  font-size: .85rem;
+  font-weight: 400;
+}
