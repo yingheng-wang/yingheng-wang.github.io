@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Denoising Diffusion Variational Inference (DDVI)</title>
+  <meta name="description" content="DDVI is a black-box variational inference algorithm for latent variable models that uses diffusion models as expressive approximate posteriors, trained with a regularized ELBO inspired by the wake-sleep algorithm.">
+  <meta name="keywords" content="DDVI, denoising diffusion variational inference, variational inference, diffusion models, variational posterior, wake-sleep, latent variable models, VAE">
+
+  <!-- Social cards -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Denoising Diffusion Variational Inference: Diffusion Models as Expressive Variational Posteriors">
+  <meta property="og:description" content="DDVI uses a diffusion model as the variational posterior: it refines a simple Gaussian latent into a latent that follows a complex, structured prior, trained with a wake-sleep-regularized ELBO.">
+  <meta property="og:url" content="https://yingheng-wang.com/DDVI/">
+  <link rel="canonical" href="https://yingheng-wang.com/DDVI/">
+  <meta property="og:image" content="https://yingheng-wang.com/DDVI/assets/images/og_image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Denoising Diffusion Variational Inference (DDVI)">
+  <meta name="twitter:description" content="DDVI uses a diffusion model as the variational posterior: it refines a simple Gaussian latent into a latent that follows a complex, structured prior, trained with a wake-sleep-regularized ELBO.">
+  <meta name="twitter:image" content="https://yingheng-wang.com/DDVI/assets/images/og_image.png">
+
+  <!-- Google Scholar -->
+  <meta name="citation_title" content="Denoising Diffusion Variational Inference: Diffusion Models as Expressive Variational Posteriors">
+  <meta name="citation_author" content="Wang, Yingheng">
+  <meta name="citation_author" content="Piriyakulkij, Wasu Top">
+  <meta name="citation_author" content="Kuleshov, Volodymyr">
+  <meta name="citation_conference_title" content="Proceedings of the AAAI Conference on Artificial Intelligence">
+  <meta name="citation_publication_date" content="2025">
+  <meta name="citation_arxiv_id" content="2401.02739">
+  <meta name="citation_pdf_url" content="https://arxiv.org/pdf/2401.02739">
+
+  <link rel="icon" type="image/svg+xml" href="assets/images/ddvi_icon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="assets/css/index.css?v=20261024">
+
+  <script>
+    document.documentElement.classList.add('js');
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      chtml: { scale: 1.0 }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script defer src="assets/js/index.js?v=20261024"></script>
+</head>
+<body>
+
+<!-- ================= Title ================= -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-widescreen">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-2 publication-title">
+            <img class="ddvi-icon" src="assets/images/ddvi_icon.svg" alt="">Denoising Diffusion Variational Inference:<br>
+            Diffusion Models as Expressive Variational Posteriors
+          </h1>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><a href="https://yingheng-wang.com/" target="_blank">Yingheng Wang</a><sup>*1</sup>,</span>
+            <span class="author-block"><a href="https://www.cs.cornell.edu/~wp237/" target="_blank">Wasu Top Piriyakulkij</a><sup>*1</sup>,</span>
+            <span class="author-block"><a href="https://www.cs.cornell.edu/~kuleshov/" target="_blank">Volodymyr Kuleshov</a><sup>1,2</sup></span>
+          </div>
+
+          <div class="is-size-5 publication-authors affiliations">
+            <span class="author-block"><sup>1</sup>Department of Computer Science, Cornell University</span>
+            <span class="author-block"><sup>2</sup>The Jacobs Technion-Cornell Institute, Cornell Tech</span>
+          </div>
+          <p class="equal-note"><sup>*</sup>Equal contribution</p>
+          <p class="venue">AAAI 2025</p>
+
+          <div class="publication-links">
+            <span class="link-block">
+              <a href="https://arxiv.org/abs/2401.02739" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="ai ai-arxiv"></i></span>
+                <span>arXiv</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="https://github.com/yingheng-wang/DDVI" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fab fa-github"></i></span>
+                <span>Code</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="#BibTeX" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fas fa-quote-right"></i></span>
+                <span>BibTeX</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Video =================
+     Drop the overview video at assets/ddvi_overview.mp4. Until that file exists, this section hides itself. -->
+<section class="hero teaser-video" id="overview-video">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser-video" autoplay muted loop playsinline controls preload="auto" width="1920" height="1080"
+             aria-label="Overview video of denoising diffusion variational inference (DDVI)">
+        <source id="teaser-source" src="assets/ddvi_overview.mp4" type="video/mp4">
+      </video>
+      <div class="video-actions" id="teaser-sound-row" hidden>
+        <button class="button is-small is-rounded" id="teaser-sound" type="button">
+          <span class="icon"><i class="fas fa-volume-high"></i></span><span>Play with sound</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  (() => {
+    const section = document.getElementById('overview-video');
+    const v = document.getElementById('teaser-video');
+    const soundRow = document.getElementById('teaser-sound-row');
+    const hide = () => { v.pause(); section.classList.add('is-hidden'); };
+    // No video file yet (or it failed to load): drop the whole slot instead of showing an empty player.
+    document.getElementById('teaser-source').addEventListener('error', hide);
+    window.addEventListener('load', () => {
+      if (v.networkState === HTMLMediaElement.NETWORK_NO_SOURCE && v.readyState === HTMLMediaElement.HAVE_NOTHING) hide();
+    });
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      v.removeAttribute('autoplay');
+      v.pause();
+    }
+    // Offer "Play with sound" only when the video has an audio track (detected while it plays muted).
+    const hasAudio = () => v.mozHasAudio || v.webkitAudioDecodedByteCount > 0 || (v.audioTracks && v.audioTracks.length > 0);
+    const checkAudio = () => {
+      if (!hasAudio()) return;
+      if (v.muted) soundRow.hidden = false;
+      v.removeEventListener('timeupdate', checkAudio);
+    };
+    v.addEventListener('loadeddata', checkAudio);
+    v.addEventListener('timeupdate', checkAudio);
+    document.getElementById('teaser-sound').addEventListener('click', () => {
+      v.currentTime = 0;
+      v.muted = false;
+      v.play();
+    });
+    // Once the narration is audible, play through once instead of looping, and drop the button.
+    v.addEventListener('volumechange', () => {
+      if (v.muted) return;
+      v.loop = false;
+      soundRow.hidden = true;
+    });
+  })();
+</script>
+
+<!-- ================= Teaser ================= -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img src="assets/images/fig1_ddvi_overview.png" width="2000" height="722"
+           alt="Diagram of DDVI in a VAE: the encoder q_phi maps x to y_T, which follows a simple prior; a reverse diffusion process q_phi(y_{t-1} | y_t, x) refines y_T through y_{T-1}, ..., y_0 = z, which follows a flexible prior such as a pinwheel, a square or a Swiss roll; a forward process r(y_t | y_{t-1}, x) noises z back to y_T; the decoder p_theta maps z to x-hat. Scatter plots under the chain show the latents turning from a Gaussian blob into a spiral.">
+      <h2 class="subtitle has-text-centered">
+        <b>A diffusion model as the variational posterior.</b> Between the encoder and the decoder, DDVI places a
+        diffusion model that maps a simple distribution into a complex distribution over latents. The approximate
+        posterior \(q_\phi(z\mid x)\) refines a Gaussian latent \(y_T\) step by step into \(z\), and is trained to reverse
+        a user-specified forward diffusion process \(r\).
+      </h2>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Abstract ================= -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified abstract">
+          <p>
+            We propose denoising diffusion variational inference (DDVI), a black-box variational inference algorithm for
+            latent variable models which relies on diffusion models as flexible approximate posteriors. Specifically, our
+            method introduces an expressive class of diffusion-based variational posteriors that perform iterative
+            refinement in latent space; we train these posteriors with a novel regularized evidence lower bound (ELBO) on
+            the marginal likelihood inspired by the wake-sleep algorithm. Our method is easy to implement (it fits a
+            regularized extension of the ELBO), is compatible with black-box variational inference, and generally
+            outperforms alternative classes of approximate posteriors based on normalizing flows or adversarial networks.
+            We find that DDVI improves inference and learning in deep latent variable models across common benchmarks as
+            well as on a motivating task in biology&mdash;inferring latent ancestry from human genomes&mdash;where it
+            outperforms strong baselines on the 1000 Genomes dataset.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Motivation ================= -->
+<section class="section" id="motivation">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">Why Diffusion-Based Posteriors?</h2>
+    <p>
+      DDVI targets amortized black-box variational inference in a latent variable model
+      \(p_\theta(x,z) = p_\theta(x\mid z)\,p_\theta(z)\) that admits efficient sampling, such as a variational
+      autoencoder, a Bayesian network, or a model written in a probabilistic programming language. The marginal
+      likelihood is approximated with an evidence lower bound that depends on an approximate posterior
+      \(q_\phi(z\mid x)\):
+    </p>
+    \[
+      \begin{aligned}
+      \log p_\theta(x) &\;\ge\; \max_\phi\; \mathbb{E}_{q_\phi(z\mid x)}\big[\log p_\theta(x,z) - \log q_\phi(z\mid x)\big]
+      \\
+      &\;=:\; \max_\phi\; \mathrm{ELBO}(x,\theta,\phi).
+      \end{aligned}
+    \]
+    <p>
+      The gap \(\log p_\theta(x) - \max_\phi \mathrm{ELBO}(x,\theta,\phi)\) equals
+      \(\min_\phi \mathrm{KL}\big(q_\phi(z\mid x)\,\|\,p_\theta(z\mid x)\big)\), so a more expressive posterior family gives
+      a tighter bound and a better learning signal for \(p_\theta\). Normalizing flows need an invertible architecture for
+      every layer, which constrains their expressivity and requires backpropagating through a potentially very deep
+      network. Adversarial posteriors need only samples from the prior, but they are trained adversarially and do not
+      give explicit likelihoods.
+    </p>
+    <p>
+      DDVI instead uses <b>diffusion in latent space</b> to parameterize \(q_\phi(z\mid x)\). A sample starts from a
+      Gaussian and is refined step by step into a distribution that can be multi-modal and complex. The posterior is
+      trained with a denoising objective, with no adversarial training and no invertible architecture; as
+      \(T \to \infty\) it effectively becomes a continuous-time normalizing flow. Unlike diffusion samplers for
+      unnormalized densities, DDVI uses the factorization \(p_\theta(x\mid z)\,p_\theta(z)\) and efficient sampling from
+      \(p_\theta\). This gives a simpler algorithm that does not rely solely on backpropagating through a sampling
+      process, and that is fast enough to learn the model as well as perform inference.
+    </p>
+
+    <div class="table-wrap">
+      <table class="results compare">
+        <thead>
+          <tr><th class="l">Model</th><th class="l">Training objective</th><th class="l">Approximating family</th><th class="c">Sample-based prior</th><th class="c">Auxiliary variable</th><th class="l">Tasks</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>AEVB</td><td>ELBO</td><td>Diagonal Gaussian</td><td class="c"><span class="no" aria-label="no">✗</span></td><td class="c"><span class="no" aria-label="no">✗</span></td><td>Density estimation</td></tr>
+          <tr><td>AEVB-IAF</td><td>ELBO</td><td>Normalizing flow</td><td class="c"><span class="no" aria-label="no">✗</span></td><td class="c"><span class="yes" aria-label="yes">✓</span></td><td>Density estimation / Visualization</td></tr>
+          <tr><td>AAEB</td><td>Adversarial training</td><td>Adversarial generator</td><td class="c"><span class="yes" aria-label="yes">✓</span></td><td class="c"><span class="no" aria-label="no">✗</span></td><td>Visualization</td></tr>
+          <tr><td>H-AEVB</td><td>ELBO</td><td>Factorial Normal / Normalizing flow</td><td class="c"><span class="no" aria-label="no">✗</span></td><td class="c"><span class="yes" aria-label="yes">✓</span></td><td>Density estimation / High-quality sample generation</td></tr>
+          <tr><td>ADGM</td><td>ELBO</td><td>Non-Gaussian</td><td class="c"><span class="no" aria-label="no">✗</span></td><td class="c"><span class="yes" aria-label="yes">✓</span></td><td>Density estimation</td></tr>
+          <tr><td>LDM</td><td>ELBO</td><td>Diagonal Gaussian</td><td class="c"><span class="no" aria-label="no">✗</span></td><td class="c"><span class="yes" aria-label="yes">✓</span></td><td>High-quality sample generation</td></tr>
+          <tr><td>LSGM</td><td>ELBO &amp; score matching</td><td>Diagonal Gaussian</td><td class="c"><span class="no" aria-label="no">✗</span></td><td class="c"><span class="yes" aria-label="yes">✓</span></td><td>High-quality sample generation</td></tr>
+          <tr class="ours"><td><b>DDVI</b></td><td>Wake ELBO + sleep term</td><td>Denoising diffusion</td><td class="c"><span class="yes" aria-label="yes">✓</span></td><td class="c"><span class="yes" aria-label="yes">✓</span></td><td>Density estimation / Visualization</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption">
+      Comparison of DDVI with related methods (Table 4 of the paper; the graphical-illustration column is omitted).
+      Latent diffusion models such as LDM and LSGM put hierarchical Gaussian latents into the generative model \(p\) to
+      improve sample quality. DDVI has a different goal: fitting a \(p\) with structured latents, where the user encodes
+      prior knowledge in \(p(z)\), by adding auxiliary latents to the posterior \(q\).
+    </p>
+
+    <div class="takeaway">
+      <p>
+        <b>In short.</b> DDVI has two components: a class of approximate posteriors \(q(z\mid x)\) parameterized by
+        diffusion, and a lower bound on the marginal likelihood inspired by wake-sleep. It is especially suited to
+        probabilistic programming, representation learning and dimensionality reduction.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Method ================= -->
+<section class="section hero is-light" id="method">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">Denoising Diffusion Variational Inference</h2>
+    <p>
+      DDVI combines a <b>modeling family</b> of approximate posteriors based on diffusion, a <b>learning objective</b>
+      formed by a regularized ELBO, and an <b>optimization algorithm</b> inspired by wake-sleep.
+    </p>
+
+    <h3 class="title">Diffusion-based posteriors</h3>
+    <p>
+      The posterior contains auxiliary latents \(y = (y_1, \dots, y_T)\), progressively simplified versions of \(z\),
+      with \(y_T\) following a simple (e.g., Gaussian) distribution. Sampling draws \(y_T\) and then runs the denoising
+      model, which refines \(y_T\) into \(z\):
+    </p>
+    \[
+      \begin{gathered}
+      q_\phi(z\mid x) = \int_y q_\phi(z\mid y, x)\, q_\phi(y\mid x)\, dy,
+      \\
+      q_\phi(y, z\mid x) = q_\phi(y_T\mid x)\, q_\phi(z\mid y_1, x) \textstyle\prod_{t=1}^{T-1} q_\phi(y_t\mid y_{t+1}, x).
+      \end{gathered}
+    \]
+    <p>
+      A forward diffusion process \(r(y\mid z, x) = r(y_1\mid z, x)\prod_{t=1}^{T-1} r(y_{t+1}\mid y_t, x)\), for example
+      Gaussian diffusion or a discrete noising process, turns \(z\) into \(y_T\), whose posterior is easier to model.
+      \(q_\phi\) is trained to approximately reverse it.
+    </p>
+
+    <h3 class="title">A regularized ELBO</h3>
+    <p>
+      Applying the ELBO over \(z\) and then over the posterior's own latent \(y\) gives a Markovian ELBO; optimizing it
+      alone is <em>unregularized DDVI</em>. Its prior term samples from the reverse process \(q\) to match the forward
+      process \(r\), the opposite of diffusion training. This on-policy learning requires backpropagating through
+      \(T\) samples, and it optimizes a mode-seeking divergence that may struggle to fit a complex \(p(z)\).
+      DDVI therefore adds a regularizer that resembles the sleep phase of wake-sleep:
+    </p>
+    \[
+      \begin{aligned}
+      \log p_\theta(x) \;\ge\;
+        & \underbrace{\mathbb{E}_{q_\phi(y,z\mid x)}\big[\log p_\theta(x\mid z)\big]}_{\text{wake / reconstruction term } \mathcal{L}_{\mathrm{rec}}}
+      \\
+        & \underbrace{-\,\mathrm{KL}\big(q_\phi(y,z\mid x)\,\|\,r(y\mid x,z)\,p(z)\big)}_{\text{prior regularization term } \mathcal{L}_{\mathrm{reg}}}
+      \\
+        & \underbrace{-\,\mathbb{E}_{p_\theta(x)}\big[\mathrm{KL}\big(p_\theta(z\mid x)\,\|\,q_\phi(z\mid x)\big)\big]}_{\text{sleep term } \mathcal{L}_{\mathrm{sleep}}}.
+      \end{aligned}
+    \]
+    <p>
+      The sleep term is optimized over \(\phi\) only, with \(x\) sampled from \(p_\theta\). It involves the intractable
+      \(p_\theta(z\mid x)\), so DDVI replaces it with a lower bound, the <em>denoising diffusion loss</em>, obtained by
+      using \(r\) as the variational posterior over \(y\):
+    </p>
+    \[
+      \begin{aligned}
+      \mathcal{L}_{\mathrm{sleep}}(\phi) &\;\ge\; \mathcal{L}_{\mathrm{diff}}(\phi)
+      \\
+      &\;=\; \mathbb{E}_{p_\theta(x,z)}\Big[\mathbb{E}_{r}\Big[\log \frac{q_\phi(y,z\mid x)}{r(y\mid z,x)}\Big]\Big] + \bar H(p_\theta),
+      \end{aligned}
+    \]
+    <p>
+      where \(\bar H(p_\theta)\) does not depend on \(\phi\). By the Markov structure of \(r\) and \(q\),
+      \(\mathcal{L}_{\mathrm{diff}}\) has the same form as the ELBO of a diffusion model. With Gaussian diffusion,
+      \(r(y_t\mid y_{t-1}) = \mathcal{N}\big(y_t;\, \sqrt{\alpha_t}\, y_{t-1},\, (1-\alpha_t) I\big)\), its sum of KL
+      divergences can be approximated by the familiar noise-prediction loss
+    </p>
+    \[
+      \mathbb{E}_{t,\, \epsilon \sim \mathcal{N}(0, I)}\, \big\| \epsilon - \epsilon_\phi\big(\sqrt{\bar\alpha_t}\, y_0 + \sqrt{1-\bar\alpha_t}\, \epsilon,\ x,\ t\big) \big\|^2,
+    \]
+    <p>
+      with \(y_0 := z\) and \(\bar\alpha_t = \prod_{s\le t} \alpha_s\). The full objective is \(\mathcal{L}_{\mathrm{ddvi}} = \mathcal{L}_{\mathrm{rec}} + \mathcal{L}_{\mathrm{reg}} + \mathcal{L}_{\mathrm{diff}}\),
+      where \(\mathcal{L}_{\mathrm{reg}}\) and \(\mathcal{L}_{\mathrm{diff}}\) may be weighted by
+      \(\beta_{\mathrm{reg}}, \beta_{\mathrm{diff}} > 0\) as in a \(\beta\)-VAE. Since
+      \(\mathcal{L}_{\mathrm{diff}} \le \mathcal{L}_{\mathrm{sleep}} \le 0\), for \(\beta_{\mathrm{reg}} \ge 1\) it is a valid
+      lower bound on \(\log p_\theta(x)\), tight when \(\beta_{\mathrm{reg}} = 1\) and
+      \(q_\phi(y, z\mid x') = r(y\mid z, x')\, p_\theta(z\mid x')\) for all \(x'\).
+    </p>
+
+    <h3 class="title">Optimization: extending wake-sleep</h3>
+    <div class="columns">
+      <div class="column">
+        <p><span class="ddvi">Wake step.</span> Sample \(x\) from the data and take a gradient step on \(\theta, \phi\)
+          for \(\mathcal{L}_{\mathrm{rec}} + \mathcal{L}_{\mathrm{reg}}\), the ELBO. This fits \(q_\phi(z\mid x)\) to
+          \(p_\theta(z\mid x)\) through the reverse KL divergence.</p>
+      </div>
+      <div class="column">
+        <p><span class="ddvi">Sleep step.</span> Sample \(z, x\) from \(p_\theta\) and take a gradient step on \(\phi\)
+          for \(\mathcal{L}_{\mathrm{diff}}\), a diffusion-style denoising loss. This fits \(q_\phi(z\mid x)\) to
+          \(p_\theta(z\mid x)\) through the forward KL divergence.</p>
+      </div>
+    </div>
+    <p>
+      When \(q_\phi\) equals \(p_\theta(z\mid x)\) and reverses \(r\), the bound \(\mathcal{L}_{\mathrm{ddvi}}\) is tight.
+      In the <b>simplified</b> variant, \(r(y\mid z)\) and \(q_\phi(z\mid y)\) do not depend on \(x\): the sleep term then
+      needs only samples from \(p(z)\) (wake-sleep in latent space), and the whole loss is optimized end-to-end with no
+      separate sleep phase, at the price of a bound that may no longer be tight. In practice we use linear noise schedules,
+      deterministic DDIM sampling to produce the latents, and a Huber loss in the simplified algorithm.
+    </p>
+    <p class="code-label">DDVI pseudocode (Algorithm 1 in the paper)</p>
+<pre class="pseudocode"><code>(optional) pre-train p_θ(x|z) and q_φ(y|x) with DDVI, using an unconditional diffusion model q_φ(z|y)
+<span class="kw">for</span> epoch = 1, …, n:
+    <span class="kw">for</span> x_1, …, x_k ~ p_D(x):
+        y_i ~ q_φ(y|x_i),  z_i ~ q_φ(z|y_i, x_i)        <span class="cm"># i = 1, …, k</span>
+        optimize θ, φ on a Monte Carlo estimate of      <span class="cm"># standard ELBO training (wake)</span>
+            E_q[log p_θ(x_i|z)] − KL(q_φ(y,z|x_i) ‖ p_θ(y,z))
+        <span class="kw">repeat</span> m times:                                 <span class="cm"># sleep</span>
+            z_i ~ p(z)                                  <span class="cm"># batch-sample latents from the prior</span>
+            x̂_i ~ p_θ(x|z_i)                            <span class="cm"># construct fantasy inputs</span>
+            y_i ~ r(y|z_i)                              <span class="cm"># noise the latents with the forward process</span>
+            optimize φ with the diffusion noise-prediction loss on q_φ(z|y_i, x̂_i)</code></pre>
+
+    <h3 class="title">Extensions</h3>
+    <div class="columns">
+      <div class="column">
+        <p><span class="ddvi">Semi-supervised learning.</span> Some data points have labels \(l\), with the model
+          \(p_\theta(x\mid z, l)\, r(y\mid z, l)\, p_\theta(z\mid l)\, p(l)\). An unobserved label is treated as a latent
+          variable, and a classification term \(\alpha\, \mathbb{E}\big[\log q_\phi(l\mid x)\big]\) trains
+          \(q_\phi(l\mid x)\) so that it can serve as a classifier.</p>
+      </div>
+      <div class="column">
+        <p><span class="ddvi">Clustering.</span> Either make \(p_\theta(z)\) a mixture of priors whose means are learned
+          and from which cluster membership is deduced, with no change to the objective of \(q_\phi\); or add a one-hot
+          cluster variable \(c\) with \(p(c) = \mathrm{Cat}(\pi)\) to the model.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Results ================= -->
+<section class="section" id="results">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">Results</h2>
+    <p>
+      We compare DDVI with AEVB (Gaussian posterior), AEVB-IAF (inverse autoregressive flow posterior) and AAEB
+      (adversarial autoencoder) on MNIST and CIFAR-10, in unsupervised and semi-supervised settings, and on the
+      1000 Genomes dataset. The unsupervised setting also includes H-AEVB (hierarchical posterior) and PIS (path
+      integral sampler). All latents are 2-dimensional; on MNIST and CIFAR-10 the prior \(p(z)\) is one of three
+      structured distributions: <em>pinwheel</em>, <em>Swiss roll</em> or <em>square</em>. Values are means with 95%
+      confidence intervals over 3 seeds (10 for semi-supervised MNIST).
+    </p>
+    <p>
+      <b>Metrics.</b> The ELBO (nats per image) and the MMD between generated and test images evaluate the learned
+      generative model. <b>Latent NLL</b> directly evaluates the expressivity of the posterior: it fits a kernel density
+      estimator to the latents of the test data and reports the negative log-likelihood of prior samples under it. Acc is
+      the accuracy of a 20-nearest-neighbor classifier on the latents.
+    </p>
+
+    <h3 class="title">Unsupervised learning</h3>
+    <figure class="paper-figure">
+      <img src="assets/images/fig2_unsupervised_mnist.png" width="2000" height="872" loading="lazy"
+           alt="Grid of MNIST test latents for AEVB, AEVB-IAF, AAEB and DDVI, with prior samples in the last column, for the pinwheel, Swiss roll and square priors. DDVI's latents follow the shape of each prior most closely.">
+      <figcaption>
+        <b>Unsupervised visualization on MNIST</b> with three priors (pinwheel, Swiss roll, square). Each color is one
+        class; the last column shows samples from the prior.
+      </figcaption>
+    </figure>
+
+    <div class="buttons has-addons dataset-toggle" role="group" aria-label="Dataset for the unsupervised results">
+      <button class="button is-small" type="button" data-show="unsup-mnist">MNIST</button>
+      <button class="button is-small" type="button" data-show="unsup-cifar">CIFAR-10</button>
+    </div>
+
+    <div class="toggle-panel" id="unsup-mnist">
+      <div class="table-wrap">
+        <table class="results wide">
+          <thead>
+            <tr class="grp"><th class="l" rowspan="2">MNIST</th><th class="span gap" colspan="3"><span>Pinwheel</span></th><th class="span gap" colspan="3"><span>Swiss roll</span></th><th class="span gap" colspan="3"><span>Square</span></th></tr>
+            <tr><th class="gap">ELBO ↑</th><th>MMD ↓</th><th>Latent NLL ↓</th><th class="gap">ELBO ↑</th><th>MMD ↓</th><th>Latent NLL ↓</th><th class="gap">ELBO ↑</th><th>MMD ↓</th><th>Latent NLL ↓</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="l">AEVB</td><td class="gap">−169.9<span class="ci">±1.9</span></td><td>0.73<span class="ci">±0.06</span></td><td>1.55<span class="ci">±0.59</span></td><td class="gap">−174.6<span class="ci">±2.8</span></td><td>0.74<span class="ci">±0.15</span></td><td>5.63<span class="ci">±1.72</span></td><td class="gap">−172.4<span class="ci">±1.2</span></td><td>1.00<span class="ci">±0.27</span></td><td>2.93<span class="ci">±1.11</span></td></tr>
+            <tr><td class="l">AEVB-IAF</td><td class="gap">−159.7<span class="ci">±5.1</span></td><td>0.76<span class="ci">±0.06</span></td><td>1.29<span class="ci">±0.40</span></td><td class="gap">−170.7<span class="ci">±17.9</span></td><td>0.76<span class="ci">±0.21</span></td><td>3.70<span class="ci">±1.97</span></td><td class="gap">−160.2<span class="ci">±6.7</span></td><td>0.77<span class="ci">±0.16</span></td><td>1.72<span class="ci">±0.10</span></td></tr>
+            <tr><td class="l">AAEB</td><td class="gap">N/A</td><td><b>0.68<span class="ci">±0.02</span></b></td><td>1.54<span class="ci">±0.13</span></td><td class="gap">N/A</td><td><b>0.54<span class="ci">±0.04</span></b></td><td>3.34<span class="ci">±0.24</span></td><td class="gap">N/A</td><td>0.85<span class="ci">±0.18</span></td><td>2.27<span class="ci">±0.87</span></td></tr>
+            <tr><td class="l">H-AEVB</td><td class="gap">−154.6<span class="ci">±4.0</span></td><td>0.73<span class="ci">±0.07</span></td><td>1.54<span class="ci">±0.11</span></td><td class="gap">−158.2<span class="ci">±6.0</span></td><td>0.64<span class="ci">±0.05</span></td><td>2.92<span class="ci">±0.45</span></td><td class="gap">−155.8<span class="ci">±7.1</span></td><td>0.75<span class="ci">±0.12</span></td><td>1.67<span class="ci">±0.04</span></td></tr>
+            <tr><td class="l">PIS<sup>†</sup></td><td class="gap">−192.6<span class="ci">±8.2</span></td><td>1.15<span class="ci">±0.04</span></td><td>2.13<span class="ci">±0.65</span></td><td class="gap">−216.6<span class="ci">±0.2</span></td><td>1.09<span class="ci">±0.02</span></td><td>6.19<span class="ci">±0.13</span></td><td class="gap">−204.6<span class="ci">±0.4</span></td><td>1.49<span class="ci">±0.04</span></td><td>3.68<span class="ci">±0.07</span></td></tr>
+            <tr class="ours"><td class="l"><b>DDVI</b></td><td class="gap"><b>−151.5<span class="ci">±2.7</span></b></td><td>0.70<span class="ci">±0.08</span></td><td><b>1.11<span class="ci">±0.10</span></b></td><td class="gap"><b>−155.9<span class="ci">±1.5</span></b></td><td>0.69<span class="ci">±0.05</span></td><td><b>2.27<span class="ci">±0.16</span></b></td><td class="gap"><b>−146.6<span class="ci">±2.4</span></b></td><td><b>0.64<span class="ci">±0.03</span></b></td><td><b>1.56<span class="ci">±0.01</span></b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-caption">
+        Unsupervised learning on MNIST (Table 1 of the paper; 3 seeds). Bold marks the best result, as in the paper.
+        The configuration of DDVI was selected on a validation split. AAEB's adversarial posterior has no explicit
+        likelihood, so it has no ELBO. <sup>†</sup>Our reimplementation of PIS as an amortized posterior.
+      </p>
+    </div>
+
+    <div class="toggle-panel" id="unsup-cifar">
+      <div class="table-wrap">
+        <table class="results wide">
+          <thead>
+            <tr class="grp"><th class="l" rowspan="2">CIFAR-10</th><th class="span gap" colspan="2"><span>Pinwheel</span></th><th class="span gap" colspan="2"><span>Swiss roll</span></th><th class="span gap" colspan="2"><span>Square</span></th></tr>
+            <tr><th class="gap">ELBO ↑</th><th>Latent NLL ↓</th><th class="gap">ELBO ↑</th><th>Latent NLL ↓</th><th class="gap">ELBO ↑</th><th>Latent NLL ↓</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="l">AEVB</td><td class="gap">−1608.1<span class="ci">±40.9</span></td><td>2.32<span class="ci">±0.17</span></td><td class="gap">−1522.1<span class="ci">±68.2</span></td><td>6.79<span class="ci">±0.66</span></td><td class="gap">−1578.3<span class="ci">±23.0</span></td><td>2.53<span class="ci">±2.07</span></td></tr>
+            <tr><td class="l">AEVB-IAF</td><td class="gap">−1491.2<span class="ci">±29.3</span></td><td>1.81<span class="ci">±1.13</span></td><td class="gap">−1464.7<span class="ci">±35.6</span></td><td>5.24<span class="ci">±1.54</span></td><td class="gap">−1475.8<span class="ci">±37.9</span></td><td>1.54<span class="ci">±0.23</span></td></tr>
+            <tr><td class="l">AAEB</td><td class="gap">N/A</td><td>1.40<span class="ci">±0.21</span></td><td class="gap">N/A</td><td>2.86<span class="ci">±0.12</span></td><td class="gap">N/A</td><td>1.80<span class="ci">±0.32</span></td></tr>
+            <tr><td class="l">H-AEVB</td><td class="gap"><b>−1401.8<span class="ci">±13.9</span></b></td><td>1.46<span class="ci">±0.02</span></td><td class="gap"><b>−1401.4<span class="ci">±20.7</span></b></td><td>5.97<span class="ci">±0.14</span></td><td class="gap">−1403.6<span class="ci">±24.6</span></td><td>1.60<span class="ci">±0.05</span></td></tr>
+            <tr><td class="l">PIS<sup>†</sup></td><td class="gap">−1686.6<span class="ci">±15.7</span></td><td>1.88<span class="ci">±0.02</span></td><td class="gap">−1991.6<span class="ci">±179.6</span></td><td>6.01<span class="ci">±0.23</span></td><td class="gap">−1865.2<span class="ci">±101.9</span></td><td>2.72<span class="ci">±1.59</span></td></tr>
+            <tr class="ours"><td class="l"><b>DDVI</b></td><td class="gap">−1453.2<span class="ci">±24.9</span></td><td><b>0.97<span class="ci">±0.07</span></b></td><td class="gap">−1548.9<span class="ci">±58.7</span></td><td><b>2.46<span class="ci">±0.31</span></b></td><td class="gap"><b>−1363.1<span class="ci">±27.2</span></b></td><td><b>1.50<span class="ci">±0.06</span></b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-caption">
+        Unsupervised learning on CIFAR-10 (Table 7 of the paper; 3 seeds). ELBO in nats per image with a Gaussian
+        decoder whose variance is fit by maximum likelihood. MMD is not reported: with a 2-dimensional latent, CIFAR-10
+        samples are of very low quality for all methods. The configuration of DDVI was selected on a validation split with
+        an earlier sigmoid decoder. <sup>†</sup>Our reimplementation.
+      </p>
+    </div>
+
+    <div class="note-box">
+      <p>
+        <b>About the ELBO values.</b> The ELBO is reported in nats per image. As is common, MNIST uses the Bernoulli
+        log-likelihood of grey-level pixels; \(\log p(z)\) is a clipped prior KDE; DDVI's \(\log q_\phi(z\mid x)\) assumes
+        an injective DDIM map; and terms are conditional on dropout masks where dropout is active. The values are thus
+        not guaranteed lower bounds on \(\log p_\theta(x)\). See the paper's appendix for the full evaluation protocol.
+      </p>
+    </div>
+
+    <p>
+      DDVI has the best ELBO and Latent NLL with all priors on MNIST. On CIFAR-10 it has the best Latent NLL with all
+      priors and the best ELBO with square (H-AEVB is higher with the other two, as are AEVB and AEVB-IAF with Swiss
+      roll). AAEB has the best MMD with pinwheel and Swiss roll.
+    </p>
+    <p>
+      <b>The sleep step matters.</b> Removing the sleep step from the second training stage of DDVI, with all other
+      settings unchanged, gives a substantially worse Latent NLL:
+    </p>
+    <div class="table-wrap">
+      <table class="results">
+        <thead>
+          <tr><th class="l">MNIST, Latent NLL ↓</th><th>Pinwheel</th><th>Swiss roll</th><th>Square</th></tr>
+        </thead>
+        <tbody>
+          <tr class="ours"><td class="l"><b>DDVI</b></td><td><b>1.11<span class="ci">±0.10</span></b></td><td><b>2.27<span class="ci">±0.16</span></b></td><td><b>1.56<span class="ci">±0.01</span></b></td></tr>
+          <tr class="ablation"><td class="l">DDVI (w/o sleep step)</td><td>3.29<span class="ci">±0.92</span></td><td>6.99<span class="ci">±4.67</span></td><td>2.39<span class="ci">±0.62</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption">From Table 9 of the paper (3 seeds), which also lists the baselines of Table 1.</p>
+
+    <h3 class="title">Semi-supervised learning</h3>
+    <p>
+      Some labels are observed (1,000 for MNIST, 10,000 for CIFAR-10) and the partition of each prior into classes is
+      known. DDVI achieves the best ELBO and Latent NLL with all priors on both datasets. It also has the best accuracy with
+      all priors on CIFAR-10 and with Swiss roll on MNIST, ties AEVB-IAF with square, and is less accurate with pinwheel.
+      In the latent visualizations, DDVI matches the prior almost perfectly.
+    </p>
+    <figure class="paper-figure">
+      <img src="assets/images/fig3_semisupervised_mnist.png" width="2000" height="872" loading="lazy"
+           alt="Grid of MNIST test latents with 1,000 labels for AEVB, AEVB-IAF, AAEB and DDVI, with the class-partitioned prior in the last column, for the pinwheel, Swiss roll and square priors. DDVI's latents nearly coincide with the prior and its class partition.">
+      <figcaption>
+        <b>Semi-supervised visualization on MNIST</b> (1,000 labels) with the three priors. Each color is one class; the
+        last column shows the prior, colored by its partition into classes.
+      </figcaption>
+    </figure>
+
+    <div class="buttons has-addons dataset-toggle" role="group" aria-label="Dataset for the semi-supervised results">
+      <button class="button is-small" type="button" data-show="semi-mnist">MNIST</button>
+      <button class="button is-small" type="button" data-show="semi-cifar">CIFAR-10</button>
+    </div>
+
+    <div class="toggle-panel" id="semi-mnist">
+      <div class="table-wrap">
+        <table class="results wide">
+          <thead>
+            <tr class="grp"><th class="l" rowspan="2">MNIST</th><th class="span gap" colspan="3"><span>Pinwheel</span></th><th class="span gap" colspan="3"><span>Swiss roll</span></th><th class="span gap" colspan="3"><span>Square</span></th></tr>
+            <tr><th class="gap">ELBO ↑</th><th>Acc ↑</th><th>Latent NLL ↓</th><th class="gap">ELBO ↑</th><th>Acc ↑</th><th>Latent NLL ↓</th><th class="gap">ELBO ↑</th><th>Acc ↑</th><th>Latent NLL ↓</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="l">AEVB</td><td class="gap">−180.7<span class="ci">±0.5</span></td><td>0.85<span class="ci">±0.02</span></td><td>1.59<span class="ci">±0.03</span></td><td class="gap">−200.0<span class="ci">±2.0</span></td><td>0.49<span class="ci">±0.02</span></td><td>5.37<span class="ci">±0.22</span></td><td class="gap">−191.2<span class="ci">±2.5</span></td><td>0.58<span class="ci">±0.04</span></td><td>2.34<span class="ci">±0.21</span></td></tr>
+            <tr><td class="l">AEVB-IAF</td><td class="gap">−168.0<span class="ci">±0.5</span></td><td><b>0.90<span class="ci">±0.01</span></b></td><td>1.13<span class="ci">±0.03</span></td><td class="gap">−175.0<span class="ci">±1.3</span></td><td>0.68<span class="ci">±0.02</span></td><td>4.39<span class="ci">±0.16</span></td><td class="gap">−173.6<span class="ci">±0.9</span></td><td><b>0.82<span class="ci">±0.02</span></b></td><td>1.55<span class="ci">±0.03</span></td></tr>
+            <tr><td class="l">AAEB<sup>‡</sup></td><td class="gap">N/A</td><td>0.64<span class="ci">±0.02</span></td><td>1.54<span class="ci">±0.03</span></td><td class="gap">N/A</td><td>0.71<span class="ci">±0.03</span></td><td>3.09<span class="ci">±0.04</span></td><td class="gap">N/A</td><td>0.59<span class="ci">±0.01</span></td><td>1.80<span class="ci">±0.09</span></td></tr>
+            <tr class="ours"><td class="l"><b>DDVI</b></td><td class="gap"><b>−161.9<span class="ci">±0.2</span></b></td><td>0.85<span class="ci">±0.01</span></td><td><b>1.10<span class="ci">±0.01</span></b></td><td class="gap"><b>−165.8<span class="ci">±0.3</span></b></td><td><b>0.82<span class="ci">±0.01</span></b></td><td><b>2.10<span class="ci">±0.01</span></b></td><td class="gap"><b>−161.7<span class="ci">±0.3</span></b></td><td><b>0.82<span class="ci">±0.01</span></b></td><td><b>1.51<span class="ci">±0.01</span></b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-caption">
+        Semi-supervised learning on MNIST with 1,000 labels (Table 2 of the paper; 10 seeds). All methods use KL and
+        classification weights 0.01, batch size 128 and 50 epochs (<sup>‡</sup>except AAEB).
+      </p>
+    </div>
+
+    <div class="toggle-panel" id="semi-cifar">
+      <div class="table-wrap">
+        <table class="results wide">
+          <thead>
+            <tr class="grp"><th class="l" rowspan="2">CIFAR-10</th><th class="span gap" colspan="3"><span>Pinwheel</span></th><th class="span gap" colspan="3"><span>Swiss roll</span></th><th class="span gap" colspan="3"><span>Square</span></th></tr>
+            <tr><th class="gap">ELBO ↑</th><th>Acc ↑</th><th>Latent NLL ↓</th><th class="gap">ELBO ↑</th><th>Acc ↑</th><th>Latent NLL ↓</th><th class="gap">ELBO ↑</th><th>Acc ↑</th><th>Latent NLL ↓</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="l">AEVB</td><td class="gap">−2113.7<span class="ci">±44.4</span></td><td>0.30<span class="ci">±0.07</span></td><td>2.24<span class="ci">±0.18</span></td><td class="gap">−2167.4<span class="ci">±82.0</span></td><td>0.20<span class="ci">±0.07</span></td><td>6.52<span class="ci">±2.12</span></td><td class="gap">−2125.1<span class="ci">±19.1</span></td><td>0.30<span class="ci">±0.05</span></td><td>1.94<span class="ci">±0.28</span></td></tr>
+            <tr><td class="l">AEVB-IAF</td><td class="gap">−2090.1<span class="ci">±29.9</span></td><td>0.48<span class="ci">±0.02</span></td><td>1.60<span class="ci">±0.08</span></td><td class="gap">−2093.7<span class="ci">±55.8</span></td><td>0.29<span class="ci">±0.03</span></td><td>7.09<span class="ci">±0.31</span></td><td class="gap">−2118.9<span class="ci">±21.3</span></td><td>0.35<span class="ci">±0.01</span></td><td>1.57<span class="ci">±0.04</span></td></tr>
+            <tr><td class="l">AAEB<sup>‡</sup></td><td class="gap">N/A</td><td>0.26<span class="ci">±0.01</span></td><td>1.70<span class="ci">±0.03</span></td><td class="gap">N/A</td><td>0.25<span class="ci">±0.03</span></td><td>3.17<span class="ci">±0.19</span></td><td class="gap">N/A</td><td>0.24<span class="ci">±0.02</span></td><td>1.67<span class="ci">±0.28</span></td></tr>
+            <tr class="ours"><td class="l"><b>DDVI</b></td><td class="gap"><b>−2053.1<span class="ci">±14.9</span></b></td><td><b>0.53<span class="ci">±0.02</span></b></td><td><b>1.07<span class="ci">±0.01</span></b></td><td class="gap"><b>−2069.3<span class="ci">±15.6</span></b></td><td><b>0.52<span class="ci">±0.02</span></b></td><td><b>2.12<span class="ci">±0.03</span></b></td><td class="gap"><b>−2065.4<span class="ci">±19.3</span></b></td><td><b>0.50<span class="ci">±0.01</span></b></td><td><b>1.50<span class="ci">±0.02</span></b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-caption">
+        Semi-supervised learning on CIFAR-10 with 10,000 labels (Table 8 of the paper; 3 seeds). All methods use KL and
+        classification weights 0.5, batch size 128 and 50 epochs (<sup>‡</sup>except AAEB).
+      </p>
+    </div>
+
+    <div class="takeaway">
+      <p>
+        <b>Diffusion vs. flows.</b> Across the 12 benchmark settings (unsupervised and semi-supervised, MNIST and
+        CIFAR-10, three priors), DDVI's diffusion posterior gives a higher ELBO than the flow-based posterior of AEVB-IAF
+        in 11. Its forward-KL sleep loss also reduces mode collapse: all modes of the prior are covered well, as the
+        Latent NLL shows.
+      </p>
+    </div>
+
+    <h3 class="title">Clustering and visualization for genotype analysis</h3>
+    <p>
+      On a real-world task, visualizing genotype data reveals patterns in the latent ancestry of individuals. We
+      instantiate DDVI with a deep Gaussian latent variable model and compare it with AEVB, AEVB-IAF and AAEB on the
+      1000 Genomes dataset, alongside three dimensionality reduction algorithms: PCA, t-SNE and UMAP. For each method,
+      20 clusters are obtained by fitting a Gaussian mixture model to its latents, and compared with the population
+      labels.
+    </p>
+    <figure class="paper-figure">
+      <img src="assets/images/fig4_genotype.png" width="2000" height="960" loading="lazy"
+           alt="2-D embeddings of the 1000 Genomes individuals from PCA, t-SNE, UMAP, AEVB, AEVB-IAF, AAEB and DDVI, colored by population.">
+      <img src="assets/images/fig5_genotype_legend.png" width="1800" height="388" loading="lazy"
+           alt="Legend: the 26 populations of the 1000 Genomes dataset and their colors.">
+      <figcaption>
+        <b>Visualization of genotype clusters.</b> Each color indicates one population (legend from the paper's
+        appendix).
+      </figcaption>
+    </figure>
+    <div class="table-wrap">
+      <table class="results">
+        <thead>
+          <tr><th class="l">1000 Genomes</th><th>Cluster purity ↑</th><th>Cluster completeness ↑</th><th>NMI ↑</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="l">AEVB</td><td>0.28<span class="ci">±0.02</span></td><td><b>0.78<span class="ci">±0.16</span></b></td><td>0.59<span class="ci">±0.08</span></td></tr>
+          <tr><td class="l">AEVB-IAF</td><td>0.29<span class="ci">±0.04</span></td><td>0.73<span class="ci">±0.06</span></td><td>0.55<span class="ci">±0.06</span></td></tr>
+          <tr><td class="l">AAEB</td><td>0.37<span class="ci">±0.06</span></td><td>0.76<span class="ci">±0.11</span></td><td>0.63<span class="ci">±0.02</span></td></tr>
+          <tr class="ours"><td class="l"><b>DDVI</b></td><td><b>0.45<span class="ci">±0.03</span></b></td><td>0.75<span class="ci">±0.05</span></td><td><b>0.66<span class="ci">±0.04</span></b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption">
+      Genotype clustering (Table 3 of the paper). DDVI attains the best cluster purity and NMI. For cluster completeness,
+      AEVB and AAEB have better means but much larger confidence intervals. There is an inherent trade-off between purity
+      and completeness; NMI captures the overall clustering performance.
+    </p>
+
+    <p>
+      <b>Computational cost.</b> On the same task, after a short warm-up, DDVI with \(T \in \{5, 10\}\) diffusion steps
+      outperforms the baselines at every later wall-clock budget, and keeps improving after the baselines have plateaued.
+    </p>
+    <div class="table-wrap">
+      <table class="results">
+        <thead>
+          <tr><th class="l">NMI after</th><th>10 min</th><th>20 min</th><th>30 min</th><th>40 min</th><th>50 min</th><th>60 min</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="l">AEVB</td><td>0.52</td><td>0.52</td><td>0.52</td><td>0.52</td><td>0.52</td><td>0.52</td></tr>
+          <tr><td class="l">AEVB-IAF</td><td>0.54</td><td>0.52</td><td>0.52</td><td>0.52</td><td>0.52</td><td>0.52</td></tr>
+          <tr><td class="l">AAEB</td><td>0.61</td><td>0.57</td><td>0.57</td><td>0.57</td><td>0.57</td><td>0.57</td></tr>
+          <tr class="ours"><td class="l">DDVI (\(T=5\))</td><td><i>warm-up</i></td><td>0.63</td><td>0.63</td><td>0.66</td><td>0.66</td><td>0.66</td></tr>
+          <tr class="ours"><td class="l">DDVI (\(T=10\))</td><td><i>warm-up</i></td><td><b>0.64</b></td><td><b>0.68</b></td><td><b>0.70</b></td><td><b>0.70</b></td><td><b>0.70</b></td></tr>
+          <tr class="ours"><td class="l">DDVI (\(T=20\))</td><td><i>warm-up</i></td><td>0.50</td><td>0.51</td><td>0.56</td><td>0.64</td><td>0.68</td></tr>
+          <tr class="ours"><td class="l">DDVI (\(T=50\))</td><td><i>warm-up</i></td><td>0.52</td><td>0.54</td><td>0.51</td><td>0.59</td><td>0.59</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption">NMI on 1000 Genomes against wall-clock training time (Table 5 of the paper).</p>
+
+    <p>
+      <b>Scope.</b> The paper focuses on dimensionality reduction and visualization; density estimation and sample
+      generation are other possible uses. Because the learning objective adds a regularizer to the ELBO, we anticipate gains
+      on models whose training benefits from regularization, but perhaps not on all models, and competitive likelihood
+      estimation requires architecture improvements that are orthogonal to this work.
+    </p>
+  </div>
+</section>
+
+<!-- ================= Code ================= -->
+<section class="section hero is-light" id="code">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">Code</h2>
+    <p>
+      The <a href="https://github.com/yingheng-wang/DDVI" target="_blank">repository</a> contains the MNIST and CIFAR-10
+      experiments of the paper (unsupervised and semi-supervised learning with structured 2-D priors; Tables 1, 2, 7, 8
+      and 9) with the final settings, all baselines, ELBO evaluation, and one script per table.
+    </p>
+<pre><code class="language-bash">git clone https://github.com/yingheng-wang/DDVI && cd DDVI
+pip install -r requirements.txt
+
+# simplified DDVI (x-independent reverse process); also the first training stage of DDVI
+python train.py dataset=mnist model=ddvi_simplified prior=pinwheel seed=0
+# DDVI with the x-conditional reverse process, initialized from the run above
+python train.py dataset=mnist model=ddvi prior=pinwheel seed=0
+# ELBO of the trained model
+python evaluate_elbo.py runs/mnist/ddvi/pinwheel/seed0
+
+bash scripts/table1_mnist.sh   # Table 1: unsupervised MNIST, 3 seeds</code></pre>
+  </div>
+</section>
+
+<!-- ================= BibTeX ================= -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">BibTeX</h2>
+    <div class="bib-wrap">
+    <button class="button is-small copy-btn" id="copy-bibtex" type="button">Copy</button>
+    <pre><code id="bibtex-code">@inproceedings{piriyakulkij-wang:aaai25,
+  Author = {Piriyakulkij, Wasu Top and Wang, Yingheng and Kuleshov, Volodymyr},
+  Booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},
+  Title = {Denoising Diffusion Variational Inference: Diffusion Models as Expressive Variational Posteriors},
+  Year = {2025}}</code></pre>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content has-text-centered">
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>,
+            which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+            This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
