@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Deep Scientific Reasoning under Physical Constraints (DeepSciReasoner)</title>
+  <meta name="description" content="DeepSciReasoner predicts structured scientific spectra (eDOS, phDOS, XANES, Raman) from crystal structures by combining structure-aware spectrum decoding with mass-conserving iterative refinement, which sharpens band edges and peaks while conserving total spectral mass.">
+  <meta name="keywords" content="DeepSciReasoner, spectrum prediction, density of states, eDOS, phonon DOS, XANES, Raman, physical constraints, mass conservation, optimal transport, crystal graph transformer, ICML 2026">
+
+  <!-- Social cards -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Deep Scientific Reasoning under Physical Constraints: Structure-Aware Spectrum Prediction">
+  <meta property="og:description" content="DeepSciReasoner decodes a spectrum from the crystal structure, then refines it by mass-conserving transport, sharpening band edges and peaks without breaking conservation. State of the art on eDOS, phDOS, XANES and Raman.">
+  <meta property="og:url" content="https://yingheng-wang.com/DeepSciReasoner/">
+  <link rel="canonical" href="https://yingheng-wang.com/DeepSciReasoner/">
+  <meta property="og:image" content="https://yingheng-wang.com/DeepSciReasoner/assets/images/og_image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Deep Scientific Reasoning under Physical Constraints (DeepSciReasoner)">
+  <meta name="twitter:description" content="DeepSciReasoner decodes a spectrum from the crystal structure, then refines it by mass-conserving transport, sharpening band edges and peaks without breaking conservation. State of the art on eDOS, phDOS, XANES and Raman.">
+  <meta name="twitter:image" content="https://yingheng-wang.com/DeepSciReasoner/assets/images/og_image.png">
+
+  <!-- Google Scholar -->
+  <meta name="citation_title" content="Deep Scientific Reasoning under Physical Constraints: Structure-Aware Spectrum Prediction">
+  <meta name="citation_author" content="Wang, Yingheng">
+  <meta name="citation_author" content="Yu, Tao">
+  <meta name="citation_author" content="Kong, Shufeng">
+  <meta name="citation_author" content="Ricci, Francesco">
+  <meta name="citation_author" content="Gregoire, John M.">
+  <meta name="citation_author" content="Gomes, Carla P.">
+  <meta name="citation_conference_title" content="Proceedings of the 43rd International Conference on Machine Learning">
+  <meta name="citation_volume" content="306">
+  <meta name="citation_publication_date" content="2026">
+  <meta name="citation_pdf_url" content="https://raw.githubusercontent.com/mlresearch/v306/main/assets/wang26ka/wang26ka.pdf">
+
+  <link rel="icon" type="image/svg+xml" href="assets/images/dsr_icon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="assets/css/index.css?v=20261025">
+
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      chtml: { scale: 1.0 }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script defer src="assets/js/index.js?v=20261025"></script>
+</head>
+<body>
+
+<!-- ================= Title ================= -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-widescreen">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-2 publication-title">
+            <img class="dsr-icon" src="assets/images/dsr_icon.svg" alt="">Deep Scientific Reasoning under Physical Constraints:<br>
+            Structure-Aware Spectrum Prediction
+          </h1>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><a href="https://yingheng-wang.com/" target="_blank">Yingheng Wang</a><sup>1</sup>,</span>
+            <span class="author-block"><span class="author-name">Tao Yu</span><sup>2</sup>,</span>
+            <span class="author-block"><span class="author-name">Shufeng Kong</span><sup>2,1</sup>,</span>
+            <span class="author-block"><span class="author-name">Francesco Ricci</span><sup>3,4</sup>,</span>
+            <br class="wide-only">
+            <span class="author-block"><span class="author-name">John M. Gregoire</span><sup>5,6</sup>,</span>
+            <span class="author-block"><a href="https://www.cs.cornell.edu/gomes/" target="_blank">Carla P. Gomes</a><sup>1</sup></span>
+          </div>
+
+          <div class="is-size-5 publication-authors affiliations">
+            <span class="author-block"><sup>1</sup>Cornell University</span>
+            <span class="author-block"><sup>2</sup>Sun Yat-sen University</span>
+            <span class="author-block"><sup>3</sup>UCLouvain</span>
+            <span class="author-block"><sup>4</sup>Matgenix SRL</span>
+            <span class="author-block"><sup>5</sup>Caltech</span>
+            <span class="author-block"><sup>6</sup>Lila Sciences</span>
+          </div>
+          <p class="venue">ICML 2026</p>
+
+          <div class="publication-links">
+            <span class="link-block">
+              <a href="https://proceedings.mlr.press/v306/wang26ka.html" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                <span>Paper</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a id="arxiv-link" href="#" aria-disabled="true" title="The arXiv version is coming soon"
+                 class="external-link button is-normal is-rounded is-dark is-static-soon">
+                <span class="icon"><i class="ai ai-arxiv"></i></span>
+                <span class="arxiv-text">arXiv (coming soon)</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="https://github.com/yingheng-wang/DeepSciReasoner" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fab fa-github"></i></span>
+                <span>Code</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="https://huggingface.co/datasets/yingheng/DeepSciReasoner" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="hf-logo">🤗</i></span>
+                <span>Dataset</span>
+              </a>
+            </span>
+            <span class="link-block">
+              <a href="#BibTeX" class="external-link button is-normal is-rounded is-dark">
+                <span class="icon"><i class="fas fa-quote-right"></i></span>
+                <span>BibTeX</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Teaser ================= -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img src="assets/images/fig1_framework.png" width="2000" height="564"
+           alt="Two-stage diagram. Left, structure-aware spectrum decoding: the crystal c is encoded by an edge-aware crystal graph Transformer, and a decoder with source attention over energy bins produces an initial spectrum y-hat-0. Right, constraint-preserving physical reasoning: a velocity field f-theta, conditioned on the crystal embedding and time, iteratively refines y-hat-0 through y-hat-1 to the output y-hat-T, with the integral of the eDOS held constant at every step.">
+      <h2 class="subtitle has-text-centered">
+        <b>Decode with structure, then refine under conservation.</b> DeepSciReasoner first decodes an initial
+        spectrum from the crystal, letting each spectral bin attend to the atoms that contribute to it. It then
+        transports spectral mass along the spectral axis with a learned velocity field, sharpening band edges and
+        peaks while the total mass stays fixed.
+      </h2>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Abstract ================= -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified abstract">
+          <p>
+            Structured scientific spectra encode rich physical information while obeying hard constraints, such as
+            conservation laws and characteristic spectral geometry. Accurate prediction of these spectra is central to
+            materials discovery, yet existing methods often treat them as unconstrained sequences and therefore fail to
+            enforce the underlying physical structure. Taking electronic density of states (eDOS) as the prototypical
+            example, we introduce DeepSciReasoner, a general paradigm for predicting scientific spectra under physical
+            constraints. The framework combines structure-aware spectrum decoding with constraint-preserving physical
+            reasoning, allowing predictions to capture rich spectral structure while respecting the underlying physics.
+            We evaluate DeepSciReasoner on eDOS, phonon density of states (phDOS), X-ray absorption near-edge structure
+            (XANES), and Raman spectra, where it substantially improves prediction accuracy while maintaining physical
+            consistency. These results establish DeepSciReasoner as a reusable blueprint for structured scientific
+            spectrum prediction under hard physical constraints.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Motivation ================= -->
+<section class="section" id="motivation">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">Why Physical Reasoning for Spectra?</h2>
+    <p>
+      Machine learning has made rapid progress on scalar crystal properties, but a spectrum is a high-dimensional output over a
+      spectral axis (energy, frequency or wavenumber) whose validity depends on physics. Viewed as a density
+      \(D(E) \ge 0\) on \([a,b]\), with normalized form \(p(E) = D(E) / \int_a^b D(u)\,du\), a valid prediction must be
+      nonnegative and conserve its total mass:
+    </p>
+    \[
+      \begin{gathered}
+      p(E) \ge 0 \;\;\text{for all } E \in [a,b],
+      \qquad
+      \int_a^b p(E)\,dE = 1,
+      \\
+      \text{for eDOS equivalently } \int_a^b D(E)\,dE = N_{\mathrm{states}}.
+      \end{gathered}
+    \]
+    <p>
+      It must also place that mass correctly: sharp band edges and gaps, and Van Hove singularities in the eDOS, and
+      their analogues in other spectra, such as the white line in XANES and sparse vibrational peaks in Raman and phDOS.
+      Prior eDOS predictors fall short in three ways that recur across structured spectra:
+    </p>
+    <div class="columns">
+      <div class="column">
+        <div class="stage-card">
+          <h4>Misaligned band edges</h4>
+          <p>The band gap and the spectrum are predicted separately and reconciled post hoc, which misaligns band edges
+            near the Fermi level and introduces spurious in-gap density.</p>
+        </div>
+      </div>
+      <div class="column">
+        <div class="stage-card">
+          <h4>Peak blurring and mass drift</h4>
+          <p>A pointwise regression loss can be low while peaks shift, Van Hove singularities blur, or the total
+            drifts: spectra that look plausible but are physically inconsistent.</p>
+        </div>
+      </div>
+      <div class="column">
+        <div class="stage-card">
+          <h4>No atom-resolved attribution</h4>
+          <p>The total eDOS is a sum of atom-projected DOS (pDOS), yet prior models collapse the crystal into a single
+            global embedding before decoding.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <p>
+        <b>Our approach.</b> Treat each spectrum as an unnormalized density: decode it with structure-aware
+        atom-to-spectral-axis attention, then refine it by mass-conserving transport, so that spectral geometry is
+        sharpened without breaking conservation. The same recipe transfers from eDOS to phDOS, XANES and Raman without
+        architectural changes.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Method ================= -->
+<section class="section hero is-light" id="method">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">DeepSciReasoner</h2>
+    <p>
+      A crystal \(c\) is a graph of atoms with interatomic edges (each atom keeps at most \(n_{\max}\) neighbors), and the
+      target is a spectrum \(y \in \mathbb{R}^{l_y}\) on a fixed grid of \(l_y\) spectral bins. The formulation is generic:
+      the only target-specific choices are the spectral axis, its discretization, and optional conditioning (for XANES,
+      the absorbing element). We describe it with eDOS as the running example.
+    </p>
+
+    <h3 class="title">Stage I: structure-aware spectrum decoding</h3>
+    <p>
+      <span class="dsr">Edge-aware crystal graph Transformer.</span> Each layer attends over an atom's neighbors with
+      keys and values modulated by the edge embedding \(g_{ij}\) of the interatomic distance, followed by a gated
+      residual connection:
+    </p>
+    \[
+      \begin{gathered}
+      \alpha_{ij} = \operatorname{softmax}_{j \in \mathcal{N}(i)}\!\Big(\frac{q_i^\top (k_j + g_{ij})}{\sqrt{d}}\Big),
+      \\
+      \hat h_i = \textstyle\sum_{j \in \mathcal{N}(i)} \alpha_{ij}\, (v_j + g_{ij}).
+      \end{gathered}
+    \]
+    <p>
+      <span class="dsr">Spectrum decoding with source attention.</span> Instead of decoding a single pooled embedding
+      with an MLP, a Transformer decoder holds one query per spectral bin, initialized from the bin's index embedding and
+      the global crystal embedding. Self-attention across bins models correlations along the spectral axis, and source
+      attention from each bin to the atom embeddings lets every bin aggregate the atoms that contribute at that energy,
+      mirroring the decomposition of the eDOS into atom-projected contributions. A Softplus head keeps the output
+      nonnegative.
+    </p>
+    <figure class="paper-figure narrow">
+      <img src="assets/images/fig2_decoder.png" width="1200" height="838" loading="lazy"
+           alt="The crystal graph Transformer (CrystalFormer) encodes the atoms; for each of the 128 energy levels, an energy-level embedding plus the crystal embedding passes through self-attention across levels, source attention to the atom embeddings, and LayerNorm, feed-forward and residual layers, giving the initial eDOS prediction y0 to y127 with a Van Hove singularity.">
+      <figcaption>
+        <b>Structure-aware spectrum decoding.</b> The edge-aware crystal graph Transformer encodes the structure, and a
+        decoder with hierarchical attention predicts the eDOS, where each energy bin selectively aggregates atom-projected
+        contributions.
+      </figcaption>
+    </figure>
+    <p>
+      Stage I is trained with a <em>shape-and-mass</em> objective. With \(\tilde y\) and \(\tilde{\hat y}\) the
+      sum-normalized target and prediction, a KL divergence supervises where spectral mass lies, and a second term
+      supervises the predicted total \(\hat Z = \sum_i \hat y_i\):
+    </p>
+    \[
+      \mathcal{L} = D_{\mathrm{KL}}\big(\tilde y \,\|\, \tilde{\hat y}\big) + \lambda \,\big\|\hat Z - Z\big\|_2^2 .
+    \]
+    <p>
+      For eDOS and phDOS the total (the number of states or modes) has an analytic form and can be supplied directly; for
+      XANES and Raman it is learned through this term.
+    </p>
+
+    <h3 class="title">Stage II: mass-conserving iterative refinement</h3>
+    <p>
+      The Stage I prediction can still blur band edges, leave noise in the gap, or misplace mass. Stage II corrects it
+      directly in probability space. The normalized prediction \(p_0\) is evolved toward the target \(p_T\) by pure
+      transport along the spectral axis, governed by the continuity equation with a learned velocity field \(f_\theta\):
+    </p>
+    \[
+      \begin{gathered}
+      \partial_t p(x,t) + \partial_x \big(p(x,t)\, f_\theta(x,t)\big) = 0,
+      \\
+      \frac{d}{dt}\int_a^b p(x,t)\,dx = -\big[\,p f_\theta\,\big]_a^b = 0 .
+      \end{gathered}
+    \]
+    <p>
+      With no flux through the boundaries, mass can move but can never be created or destroyed. As a physically
+      principled reference flow, we use the 2-Wasserstein displacement interpolation between \(p_0\) and \(p_T\). In one
+      dimension it moves every quantile \(s\) on a straight line at constant speed:
+    </p>
+    \[
+      \begin{gathered}
+      x_t(s) = (1-t)\,F_0^{-1}(s) + t\,F_T^{-1}(s),
+      \\
+      f_t\big(x_t(s)\big) = F_T^{-1}(s) - F_0^{-1}(s),
+      \end{gathered}
+    \]
+    <p>
+      where \(F_0\) and \(F_T\) are the CDFs of \(p_0\) and \(p_T\). This pair exactly satisfies the continuity equation.
+    </p>
+    <div class="columns">
+      <div class="column">
+        <p><span class="dsr">Training (simulation-free).</span> Regress the velocity network onto the reference field:</p>
+        \[ \mathcal{L}(\theta) = \mathbb{E}_{(x,t)}\, \big\| f_\theta(x,t; C) - f_t(x) \big\|^2 . \]
+        <p>There is no differentiation through the optimal-transport construction or the PDE solver. Conditioning on
+          the crystal embedding \(C\) amortizes one velocity network across all crystals.</p>
+      </div>
+      <div class="column">
+        <p><span class="dsr">Inference (CDF upwind scheme).</span> Transport the CDF \(F\) instead of the density, with
+          forward Euler in time and a first-order upwind difference in space:</p>
+        \[ F_i^{k+1} = F_i^{k} - \Delta t\, f_\theta(x_i, t_k)\, D_x^{\mathrm{up}} F_i^{k} . \]
+        <p>The density is recovered by finite differences. The monotone scheme keeps the CDF ordered, so the refined
+          spectrum stays nonnegative and conserves its mass.</p>
+      </div>
+    </div>
+    <p class="code-label">Inference pipeline (Algorithm 1 in the paper)</p>
+<pre class="pseudocode"><code><span class="kw">function</span> INFER(G):
+    {h_i}, h_x ← Enc(G);  ŷ₀ ← Dec({h_i}, h_x)       <span class="cm"># Stage I: structure-aware decoding</span>
+    p ← ŷ₀ / Σ_i ŷ₀,i;  F_i ← Σ_{m≤i} p_m Δx         <span class="cm"># normalize; initial CDF</span>
+    <span class="kw">for</span> k = 0, …, N_t − 2:                           <span class="cm"># Stage II: mass-conserving refinement</span>
+        v_i ← f_θ(x_i, kΔt; h_x)                     <span class="cm"># velocity on the spectral grid</span>
+        F_i ← F_i − Δt · v_i · D_x^up F_i            <span class="cm"># upwind CDF update</span>
+        p_i ← (F_i − F_{i−1}) / Δx;  renormalize p   <span class="cm"># recover the density</span>
+    <span class="kw">return</span> p                                         <span class="cm"># optionally rescaled by the predicted total Ẑ</span></code></pre>
+    <p>
+      \(D_x^{\mathrm{up}}\) is the backward difference where \(v_i \ge 0\) and the forward difference where
+      \(v_i &lt; 0\), and a CFL-like condition \(\max_i |v_i|\,\Delta t / \Delta x \le 1\) keeps the CDF monotone. Derivations and proofs of
+      the end-to-end validity guarantee are in the paper's appendix.
+    </p>
+  </div>
+</section>
+
+<!-- ================= Results ================= -->
+<section class="section" id="results">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">Results</h2>
+    <p>
+      We compare against two families of baselines: structure encoders that map a learned crystal representation to the
+      target (E3NN, GATGNN, CrystalFormer, and MEGNet and M3GNet on the generalization benchmarks), and
+      crystal-to-sequence models that decode the spectrum as a sequence over its bins (Mat2Spec, DOSTransformer).
+      Spectra are compared with the DFT ground truth by \(R^2\), MAE, MSE and Wasserstein distance (WD). Unlike prior
+      work, the eDOS benchmarks keep the full spectrum, including the band gap between the valence-band maximum and the
+      conduction-band minimum, which makes them more challenging.
+    </p>
+
+    <h3 class="title">Electronic density of states</h3>
+    <div class="table-wrap">
+      <table class="results wide">
+        <thead>
+          <tr class="grp"><th class="l" rowspan="2">Method</th><th class="span gap" colspan="4"><span>CalTech</span></th><th class="span gap" colspan="4"><span>TRI</span></th></tr>
+          <tr><th class="gap">\(R^2\) ↑</th><th>MAE ↓</th><th>MSE ↓</th><th>WD ↓</th><th class="gap">\(R^2\) ↑</th><th>MAE ↓</th><th>MSE ↓</th><th>WD ↓</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="l">E3NN</td><td class="gap">0.748<span class="ci">±0.002</span></td><td>2.421<span class="ci">±0.003</span></td><td>27.351<span class="ci">±0.629</span></td><td>0.261<span class="ci">±0.005</span></td><td class="gap">0.669<span class="ci">±0.004</span></td><td>2.945<span class="ci">±0.005</span></td><td>36.535<span class="ci">±0.532</span></td><td>0.445<span class="ci">±0.004</span></td></tr>
+            <tr><td class="l">GATGNN</td><td class="gap"><u>0.772<span class="ci">±0.001</span></u></td><td>2.272<span class="ci">±0.016</span></td><td>24.831<span class="ci">±0.585</span></td><td>0.230<span class="ci">±0.004</span></td><td class="gap">0.702<span class="ci">±0.004</span></td><td>2.724<span class="ci">±0.004</span></td><td>33.811<span class="ci">±0.420</span></td><td><u>0.370<span class="ci">±0.003</span></u></td></tr>
+            <tr><td class="l">CrystalFormer</td><td class="gap">0.765<span class="ci">±0.006</span></td><td>2.344<span class="ci">±0.016</span></td><td>26.138<span class="ci">±0.477</span></td><td>0.248<span class="ci">±0.012</span></td><td class="gap">0.695<span class="ci">±0.010</span></td><td>2.869<span class="ci">±0.082</span></td><td>34.584<span class="ci">±0.581</span></td><td>0.399<span class="ci">±0.017</span></td></tr>
+            <tr class="group-start"><td class="l">Mat2Spec</td><td class="gap">0.743<span class="ci">±0.002</span></td><td>2.226<span class="ci">±0.010</span></td><td>27.955<span class="ci">±0.137</span></td><td>0.228<span class="ci">±0.013</span></td><td class="gap">0.677<span class="ci">±0.002</span></td><td>2.719<span class="ci">±0.072</span></td><td>36.628<span class="ci">±0.105</span></td><td>0.395<span class="ci">±0.009</span></td></tr>
+            <tr><td class="l">DOSTransformer</td><td class="gap">0.771<span class="ci">±0.002</span></td><td><u>2.023<span class="ci">±0.032</span></u></td><td><u>24.675<span class="ci">±0.354</span></u></td><td><u>0.212<span class="ci">±0.040</span></u></td><td class="gap"><u>0.716<span class="ci">±0.003</span></u></td><td><u>2.455<span class="ci">±0.080</span></u></td><td><u>32.208<span class="ci">±0.288</span></u></td><td>0.375<span class="ci">±0.014</span></td></tr>
+            <tr class="ours group-start"><td class="l"><b>DeepSciReasoner</b></td><td class="gap"><b>0.815<span class="ci">±0.007</span></b></td><td><b>1.983<span class="ci">±0.021</span></b></td><td><b>19.612<span class="ci">±0.225</span></b></td><td><b>0.191<span class="ci">±0.017</span></b></td><td class="gap"><b>0.761<span class="ci">±0.009</span></b></td><td><b>2.357<span class="ci">±0.046</span></b></td><td><b>27.162<span class="ci">±0.563</span></b></td><td><b>0.305<span class="ci">±0.011</span></b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption">
+      Full-spectrum eDOS prediction (Table 1 of the paper; mean ± one standard deviation). CalTech uses 128 bins over
+      [−4, 4] eV and TRI 256 bins over [−5, 5] eV, both derived from the Materials Project. Bold marks the best mean and
+      underline the second best. DeepSciReasoner is best on every metric of both datasets; on CalTech it reduces MSE by
+      20.5% relative to the strongest baseline.
+    </p>
+
+    <h3 class="title">Beyond eDOS: XANES, Raman and phonon DOS</h3>
+    <div class="table-wrap">
+      <table class="results wide xwide">
+        <thead>
+          <tr class="grp"><th class="l" rowspan="2">Method</th><th class="span gap" colspan="2"><span>XANES-full</span></th><th class="span gap" colspan="2"><span>XANES-O</span></th><th class="span gap" colspan="2"><span>Raman</span></th><th class="span gap" colspan="4"><span>phDOS</span></th></tr>
+          <tr><th class="gap">\(R^2\) ↑</th><th>WD ↓</th><th class="gap">\(R^2\) ↑</th><th>WD ↓</th><th class="gap">\(R^2\) ↑</th><th>WD ↓</th><th class="gap">\(R^2\) ↑</th><th>MAE ↓</th><th>MSE ↓</th><th>WD ↓</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="l">E3NN</td><td class="gap">0.650<span class="ci">±0.012</span></td><td>0.108<span class="ci">±0.003</span></td><td class="gap">0.381<span class="ci">±0.011</span></td><td>0.099<span class="ci">±0.004</span></td><td class="gap">0.096<span class="ci">±0.005</span></td><td>0.451<span class="ci">±0.019</span></td><td class="gap">0.506<span class="ci">±0.015</span></td><td>0.082<span class="ci">±0.003</span></td><td>0.026<span class="ci">±0.001</span></td><td>0.103<span class="ci">±0.004</span></td></tr>
+            <tr><td class="l">GATGNN</td><td class="gap">0.648<span class="ci">±0.005</span></td><td><u>0.104<span class="ci">±0.001</span></u></td><td class="gap">0.293<span class="ci">±0.013</span></td><td>0.108<span class="ci">±0.002</span></td><td class="gap"><u>0.115<span class="ci">±0.005</span></u></td><td>0.526<span class="ci">±0.008</span></td><td class="gap">0.270<span class="ci">±0.025</span></td><td>0.106<span class="ci">±0.002</span></td><td>0.038<span class="ci">±0.003</span></td><td>0.155<span class="ci">±0.008</span></td></tr>
+            <tr><td class="l">MEGNet</td><td class="gap"><u>0.657<span class="ci">±0.008</span></u></td><td>0.107<span class="ci">±0.002</span></td><td class="gap">0.347<span class="ci">±0.020</span></td><td>0.102<span class="ci">±0.006</span></td><td class="gap">0.045<span class="ci">±0.004</span></td><td>0.449<span class="ci">±0.024</span></td><td class="gap">0.538<span class="ci">±0.014</span></td><td>0.080<span class="ci">±0.003</span></td><td>0.024<span class="ci">±0.001</span></td><td>0.094<span class="ci">±0.004</span></td></tr>
+            <tr><td class="l">M3GNet</td><td class="gap">0.648<span class="ci">±0.010</span></td><td>0.107<span class="ci">±0.002</span></td><td class="gap"><u>0.386<span class="ci">±0.012</span></u></td><td><u>0.096<span class="ci">±0.005</span></u></td><td class="gap">0.083<span class="ci">±0.003</span></td><td><u>0.426<span class="ci">±0.021</span></u></td><td class="gap"><u>0.543<span class="ci">±0.012</span></u></td><td><u>0.075<span class="ci">±0.003</span></u></td><td><u>0.023<span class="ci">±0.001</span></u></td><td><u>0.075<span class="ci">±0.003</span></u></td></tr>
+            <tr class="ours group-start"><td class="l"><b>DSR</b></td><td class="gap"><b>0.764<span class="ci">±0.009</span></b></td><td><b>0.098<span class="ci">±0.003</span></b></td><td class="gap"><b>0.474<span class="ci">±0.010</span></b></td><td><b>0.093<span class="ci">±0.003</span></b></td><td class="gap"><b>0.264<span class="ci">±0.002</span></b></td><td><b>0.423<span class="ci">±0.017</span></b></td><td class="gap"><b>0.636<span class="ci">±0.013</span></b></td><td><b>0.062<span class="ci">±0.004</span></b></td><td><b>0.021<span class="ci">±0.002</span></b></td><td><b>0.061<span class="ci">±0.002</span></b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption">
+      Generalization to other structured spectra (Table 2 of the paper; mean ± one standard deviation), with the
+      architecture essentially unchanged. XANES-full covers K-edge spectra of all absorbing elements (the decoder is also
+      conditioned on the absorber), and XANES-O is the oxygen K-edge subset with one spectrum per material.
+      DSR = DeepSciReasoner. It improves XANES-full \(R^2\) from 0.657 to 0.764 and Raman \(R^2\) from 0.115 to 0.264 over the
+      strongest baseline, and is best on all four phDOS metrics.
+    </p>
+
+    <h3 class="title">Sharper gaps: valence-band gap identification</h3>
+    <p>
+      Whether a predicted eDOS is sharp enough to be useful shows in a practical screening task: identifying rare
+      near-Fermi-level valence-band (VB) gaps, regions of suppressed states that are easily washed out by smoothing or
+      regression noise. Only a small fraction of materials have them, so the task is highly imbalanced.
+    </p>
+    <div class="table-wrap">
+      <table class="results wide">
+        <thead>
+          <tr class="grp"><th class="l" rowspan="2">Method</th><th class="span gap" colspan="4"><span>CalTech</span></th><th class="span gap" colspan="4"><span>TRI</span></th></tr>
+          <tr><th class="gap">Prec. ↑</th><th>Recall ↑</th><th>F1 ↑</th><th>MCC ↑</th><th class="gap">Prec. ↑</th><th>Recall ↑</th><th>F1 ↑</th><th>MCC ↑</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="l">E3NN</td><td class="gap">0.672<span class="ci">±0.035</span></td><td>0.366<span class="ci">±0.013</span></td><td>0.474<span class="ci">±0.003</span></td><td>0.479<span class="ci">±0.011</span></td><td class="gap">0.647<span class="ci">±0.052</span></td><td>0.314<span class="ci">±0.071</span></td><td>0.423<span class="ci">±0.028</span></td><td>0.442<span class="ci">±0.012</span></td></tr>
+            <tr><td class="l">GATGNN</td><td class="gap">0.699<span class="ci">±0.033</span></td><td>0.430<span class="ci">±0.008</span></td><td>0.532<span class="ci">±0.003</span></td><td>0.532<span class="ci">±0.009</span></td><td class="gap"><u>0.671<span class="ci">±0.049</span></u></td><td>0.362<span class="ci">±0.053</span></td><td>0.476<span class="ci">±0.021</span></td><td>0.489<span class="ci">±0.008</span></td></tr>
+            <tr><td class="l">CrystalFormer</td><td class="gap">0.654<span class="ci">±0.023</span></td><td>0.443<span class="ci">±0.031</span></td><td>0.532<span class="ci">±0.022</span></td><td>0.542<span class="ci">±0.013</span></td><td class="gap">0.616<span class="ci">±0.037</span></td><td>0.371<span class="ci">±0.009</span></td><td>0.465<span class="ci">±0.024</span></td><td>0.472<span class="ci">±0.031</span></td></tr>
+            <tr class="group-start"><td class="l">Mat2Spec</td><td class="gap"><u>0.726<span class="ci">±0.018</span></u></td><td><u>0.551<span class="ci">±0.007</span></u></td><td><u>0.629<span class="ci">±0.004</span></u></td><td><u>0.611<span class="ci">±0.019</span></u></td><td class="gap">0.601<span class="ci">±0.024</span></td><td><u>0.429<span class="ci">±0.016</span></u></td><td><u>0.509<span class="ci">±0.017</span></u></td><td><u>0.508<span class="ci">±0.014</span></u></td></tr>
+            <tr><td class="l">DOSTransformer</td><td class="gap">0.684<span class="ci">±0.027</span></td><td>0.532<span class="ci">±0.009</span></td><td>0.594<span class="ci">±0.014</span></td><td>0.584<span class="ci">±0.051</span></td><td class="gap">0.573<span class="ci">±0.073</span></td><td>0.329<span class="ci">±0.020</span></td><td>0.416<span class="ci">±0.052</span></td><td>0.422<span class="ci">±0.066</span></td></tr>
+            <tr class="ours group-start"><td class="l"><b>DeepSciReasoner</b></td><td class="gap"><b>0.753<span class="ci">±0.021</span></b></td><td><b>0.637<span class="ci">±0.014</span></b></td><td><b>0.704<span class="ci">±0.011</span></b></td><td><b>0.679<span class="ci">±0.022</span></b></td><td class="gap"><b>0.803<span class="ci">±0.035</span></b></td><td><b>0.571<span class="ci">±0.064</span></b></td><td><b>0.648<span class="ci">±0.047</span></b></td><td><b>0.645<span class="ci">±0.063</span></b></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption">
+      VB-gap identification (Table 3 of the paper). Structure encoders struggle with their indirect mapping from a global
+      representation, and crystal-to-sequence models improve precision but remain recall-limited. DeepSciReasoner raises
+      F1 from 0.629 to 0.704 on CalTech and from 0.509 to 0.648 on TRI.
+    </p>
+
+    <h3 class="title">Data efficiency</h3>
+    <div class="columns is-vcentered">
+      <div class="column is-5">
+        <p>
+          Trained on 25%, 50% and 75% of the CalTech training set, DeepSciReasoner is the best method at every data
+          regime and on every metric, with a clear margin already at 25%. The gap widens rather than narrows as data grows,
+          so the method keeps converting additional supervision into spectral fidelity. The TRI dataset shows the same
+          trends (see the paper's appendix).
+        </p>
+      </div>
+      <div class="column is-7">
+        <figure class="paper-figure" style="margin:0">
+          <img src="assets/images/fig3_scaling_caltech.png" width="1200" height="858" loading="lazy"
+               alt="Four panels of R squared, MAE, MSE and WD against training set size (25%, 50%, 75%) on CalTech for E3NN, GATGNN, Mat2Spec, DOSTransformer and DeepSciReasoner; DeepSciReasoner is best at every size, with R squared rising from about 0.74 to 0.81.">
+          <figcaption>Data scaling on CalTech: \(R^2\), MAE, MSE and WD against training set size.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <h3 class="title">Both stages matter</h3>
+    <div class="table-wrap">
+      <table class="results wide">
+        <thead>
+          <tr class="grp"><th class="l" rowspan="2">Variant</th><th class="span gap" colspan="4"><span>CalTech</span></th><th class="span gap" colspan="4"><span>TRI</span></th></tr>
+          <tr><th class="gap">\(R^2\) ↑</th><th>MAE ↓</th><th>MSE ↓</th><th>WD ↓</th><th class="gap">\(R^2\) ↑</th><th>MAE ↓</th><th>MSE ↓</th><th>WD ↓</th></tr>
+        </thead>
+        <tbody>
+          <tr class="ours"><td class="l"><b>DeepSciReasoner</b></td><td class="gap"><b>0.815<span class="ci">±0.007</span></b></td><td><b>1.983<span class="ci">±0.021</span></b></td><td><b>19.612<span class="ci">±0.225</span></b></td><td><b>0.191<span class="ci">±0.017</span></b></td><td class="gap"><b>0.761<span class="ci">±0.009</span></b></td><td><b>2.357<span class="ci">±0.046</span></b></td><td><b>27.162<span class="ci">±0.563</span></b></td><td><b>0.305<span class="ci">±0.011</span></b></td></tr>
+            <tr class="ablation"><td class="l">w/o refinement (NR)</td><td class="gap"><u>0.807<span class="ci">±0.003</span></u></td><td><u>2.061<span class="ci">±0.020</span></u></td><td><u>20.990<span class="ci">±0.373</span></u></td><td><u>0.207<span class="ci">±0.005</span></u></td><td class="gap"><u>0.742<span class="ci">±0.005</span></u></td><td><u>2.420<span class="ci">±0.018</span></u></td><td><u>29.387<span class="ci">±0.641</span></u></td><td><u>0.329<span class="ci">±0.004</span></u></td></tr>
+            <tr class="ablation"><td class="l">w/o both (NDNR)</td><td class="gap">0.779<span class="ci">±0.001</span></td><td>2.259<span class="ci">±0.003</span></td><td>24.726<span class="ci">±0.174</span></td><td>0.223<span class="ci">±0.007</span></td><td class="gap">0.708<span class="ci">±0.003</span></td><td>2.701<span class="ci">±0.005</span></td><td>33.196<span class="ci">±0.136</span></td><td>0.372<span class="ci">±0.003</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption">
+      Ablation (Table 4 of the paper). Removing the mass-conserving refinement (NR) degrades every metric on both
+      datasets; also removing structure-aware decoding (NDNR) costs much more, e.g. a further 17.8% in MSE on CalTech
+      and 13.1% in WD on TRI. Refinement gives moderate but consistent gains in spectral geometry, while structure-aware
+      decoding drives most of the global accuracy.
+    </p>
+
+    <h3 class="title">Qualitative examples</h3>
+    <figure class="paper-figure">
+      <img src="assets/images/fig5_qualitative.png" width="2000" height="843" loading="lazy"
+           alt="Eight eDOS panels (four CalTech, four TRI test materials) comparing the DFT ground truth with DeepSciReasoner, E3NN, GATGNN, Mat2Spec and DOSTransformer; DeepSciReasoner follows the band edges and sharp peaks most closely, while baselines smear edges or shift and add peaks.">
+      <figcaption>
+        <b>Against the baselines.</b> Predicted eDOS on CalTech (top) and TRI (bottom) test materials. DeepSciReasoner
+        better reproduces the band edges and gap region, and places the dominant Van Hove singularities at the right
+        energies, while baselines smear edges, shift peaks or add spurious ones.
+      </figcaption>
+    </figure>
+    <figure class="paper-figure">
+      <img src="assets/images/fig6_ours_vs_gt.png" width="2000" height="822" loading="lazy"
+           alt="Eight eDOS panels (four CalTech, four TRI test materials) comparing DeepSciReasoner's prediction with the DFT ground truth; the curves nearly overlap, including band gaps and sharp peaks.">
+      <figcaption>
+        <b>DeepSciReasoner against DFT.</b> More test materials with only our prediction and the ground truth, including
+        gapped materials with steep band onsets.
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= Code and data ================= -->
+<section class="section hero is-light" id="code">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">Code and Data</h2>
+    <p>
+      The <a href="https://github.com/yingheng-wang/DeepSciReasoner" target="_blank">repository</a> contains Stage I and
+      Stage II training, test-set evaluation, and launch scripts for every benchmark in the paper. The six benchmarks are
+      released on <a href="https://huggingface.co/datasets/yingheng/DeepSciReasoner" target="_blank">Hugging Face</a> as
+      prepared crystal graphs with spectrum targets and fixed 80/10/10 splits.
+    </p>
+    <div class="table-wrap">
+      <table class="results data">
+        <thead>
+          <tr><th class="l">Benchmark</th><th class="l">Spectrum</th><th class="l">Spectral grid</th><th>Samples</th><th class="l">Source</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="l"><code>edos_caltech</code></td><td class="l">eDOS (CalTech)</td><td class="l nw">128 bins, [−4, 4] eV</td><td>37,565</td><td class="l">Kong et al., 2022 (Materials Project)</td></tr>
+          <tr><td class="l"><code>edos_tri</code></td><td class="l">eDOS (TRI)</td><td class="l nw">256 bins, [−5, 5] eV</td><td>14,140</td><td class="l">Mueller et al., 2024 (Materials Project)</td></tr>
+          <tr><td class="l"><code>phdos</code></td><td class="l">Phonon DOS</td><td class="l nw">51 bins, [0, 1000] cm⁻¹</td><td>1,524</td><td class="l">Chen et al., 2021 (DFPT)</td></tr>
+          <tr><td class="l"><code>xanes_full</code></td><td class="l">K-edge XANES, all absorbers</td><td class="l nw">128 bins, [−5, 40] eV rel. to E₀</td><td>49,895</td><td class="l">Materials Project XAS (Mathew et al., 2018)</td></tr>
+          <tr><td class="l"><code>xanes_o</code></td><td class="l">K-edge XANES, oxygen</td><td class="l nw">128 bins, [−5, 40] eV rel. to E₀</td><td>5,094</td><td class="l">Oxygen subset of <code>xanes_full</code></td></tr>
+          <tr><td class="l"><code>raman</code></td><td class="l">Raman</td><td class="l nw">128 bins, [0, 1500] cm⁻¹</td><td>2,283</td><td class="l">Bagheri &amp; Komsa, 2023 (DFPT)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-caption">
+      Samples are materials, except for <code>xanes_full</code>, where they are (material, absorbing element) pairs.
+      Curation details are in the paper's appendix and on the dataset card, which also lists the licenses of the source
+      data and the works to cite.
+    </p>
+<pre><code class="language-bash">git clone https://github.com/yingheng-wang/DeepSciReasoner && cd DeepSciReasoner
+CONDA_CHANNEL_PRIORITY=flexible conda env create -f environment.yml && conda activate dsr
+
+bash scripts/download_data.sh edos_caltech          # no argument: all six benchmarks
+for seed in 1 4; do
+  bash scripts/train_stage1.sh edos_caltech $seed   # Stage I: structure-aware decoding
+  bash scripts/train_stage2.sh edos_caltech $seed   # Stage II: refinement on the frozen Stage I model
+done
+bash scripts/test.sh edos_caltech 1 4               # test-set metrics of the two-seed ensemble</code></pre>
+  </div>
+</section>
+
+<!-- ================= BibTeX ================= -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title is-3">BibTeX</h2>
+    <div class="bib-wrap">
+    <button class="button is-small copy-btn" id="copy-bibtex" type="button">Copy</button>
+    <pre><code id="bibtex-code">@inproceedings{wang2026deepscireasoner,
+  title     = {Deep Scientific Reasoning under Physical Constraints: Structure-Aware Spectrum Prediction},
+  author    = {Wang, Yingheng and Yu, Tao and Kong, Shufeng and Ricci, Francesco and Gregoire, John M. and Gomes, Carla P.},
+  booktitle = {Proceedings of the 43rd International Conference on Machine Learning},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {306},
+  year      = {2026}
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content has-text-centered">
+          <p>
+            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>,
+            which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+            This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
