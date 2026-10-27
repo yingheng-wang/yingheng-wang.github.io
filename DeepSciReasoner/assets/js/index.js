@@ -1,7 +1,7 @@
 // ---------------------------------------------------------------------------
 // Set this once the paper is on arXiv (e.g. '2610.01234'): it enables the
 // arXiv button. Leave empty until then.
-const ARXIV_ID = '';
+const ARXIV_ID = '2610.34021';
 // ---------------------------------------------------------------------------
 
 function setupArxiv() {
